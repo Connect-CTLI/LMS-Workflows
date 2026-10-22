@@ -5,7 +5,7 @@
    Google Sheet between the quotes below. After that, manage every link
    in the Google Sheet. You do not need to edit this file again.
    ===================================================================== */
-const SHEET_CSV = "";
+const SHEET_CSV = "1Lpn6nu4ny7kty44mdOweO7MzueIVMA06EVVKGgFcASY";
 
 /* Backup links. Only used if SHEET_CSV is empty or the sheet cannot be
    reached. A link in the Google Sheet always wins over one typed here. */
