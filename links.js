@@ -1,9 +1,14 @@
 /* =====================================================================
-   Connect@CTLI Workflows 2027: ALL LINKS LIVE IN THIS FILE
-   Paste each Google Sheet, form, dashboard or Drive folder link between
-   the quotes. Every page on the site reads from here, so you only paste
-   a link once. Anything left empty shows as greyed out.
+   Connect@CTLI Workflows 2027: WHERE THE SITE GETS ITS LINKS
+
+   STEP 1 (once): paste the "Publish to web" CSV link of the Site Links
+   Google Sheet between the quotes below. After that, manage every link
+   in the Google Sheet. You do not need to edit this file again.
    ===================================================================== */
+const SHEET_CSV = "";
+
+/* Backup links. Only used if SHEET_CSV is empty or the sheet cannot be
+   reached. A link in the Google Sheet always wins over one typed here. */
 const LINKS = {
   request: "",   // Course Activation Request form
   tracker: "",   // Request tracker sheet (form responses with Status column)
@@ -52,6 +57,7 @@ function fillTopLinks(){
 /* Unit link table. cols: any of "cohort", "reports", "dashboard" */
 function renderUnitTable(target, cols){
   const tb = document.getElementById(target); if(!tb) return;
+  tb.innerHTML = "";
   const label = {cohort:"Cohort sheet", reports:"Report folder", dashboard:"Dashboard"};
   UNITS.forEach(u=>{
     const L = LINKS.units[u.k] || {};
@@ -68,4 +74,40 @@ function renderUnitTable(target, cols){
   });
 }
 
-document.addEventListener("DOMContentLoaded", fillTopLinks);
+/* ---------- read the published Google Sheet ---------- */
+function parseCSV(text){
+  const rows=[]; let row=[], cell="", q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(q){ if(ch==='"'){ if(text[i+1]==='"'){cell+='"';i++;} else q=false; } else cell+=ch; }
+    else if(ch==='"') q=true;
+    else if(ch===','){ row.push(cell); cell=""; }
+    else if(ch==='\n'||ch==='\r'){ if(ch==='\r'&&text[i+1]==='\n') i++; row.push(cell); rows.push(row); row=[]; cell=""; }
+    else cell+=ch;
+  }
+  if(cell!==""||row.length){ row.push(cell); rows.push(row); }
+  return rows;
+}
+function applyLink(code, url){
+  const [a,b] = code.split(".");
+  if(b){ if(LINKS.units[a] && b in LINKS.units[a]) LINKS.units[a][b] = url; }
+  else if(a in LINKS && a !== "units") LINKS[a] = url;
+}
+const LINKS_READY = (async ()=>{
+  if(!SHEET_CSV) return;
+  try{
+    const r = await fetch(SHEET_CSV + (SHEET_CSV.includes("?") ? "&" : "?") + "t=" + Date.now(), {cache:"no-store"});
+    if(!r.ok) return;
+    parseCSV(await r.text()).forEach(row=>{
+      const code = (row[0]||"").trim(), url = (row[3]||"").trim();
+      if(code && /^https:\/\//i.test(url)) applyLink(code, url);
+    });
+  }catch(e){ /* sheet not reachable: keep the backup links */ }
+})();
+
+/* Draw now with the backup links, then again once the sheet has loaded */
+function onLinks(draw){
+  const run = ()=>{ fillTopLinks(); draw && draw(); };
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", run); else run();
+  LINKS_READY.then(run);
+}
