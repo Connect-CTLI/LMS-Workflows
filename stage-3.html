@@ -7,201 +7,168 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Questrial&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500&display=swap" rel="stylesheet">
 <style>
-/* Layout: navy ground as on the QMF Access page; compact header with stage menu, then the page's own content cards */
+/* Layout: department portal. Fixed side menu on desktop (top bar on phones), quiet light ground, compact panels and tables */
 :root{
-  --navy:#001489; --deep:#000b4d; --gold:#FFC600; --olive:#8FAD15; --teal:#00A1A3; --slate:#5B7F95;
-  --card:#ffffff; --ink:#0c1633; --soft:#4f6578; --line:#e1e6f0; --chip:#f3f5fa;
-  --ground-a:#001489; --ground-b:#000b4d; --on-ground:#ffffff; --on-ground-soft:rgba(255,255,255,.74);
-  --font:'Century Gothic','Gotham','Questrial','Jost','Trebuchet MS',system-ui,sans-serif;
-  --head:'Century Gothic','Gotham','Jost','Questrial',sans-serif;
-  --r:16px;
+  --navy:#001489; --navy-2:#0a1f6e; --gold:#FFC600; --teal:#00A1A3; --olive:#8FAD15; --slate:#5B7F95;
+  --bg:#f4f6f9; --panel:#ffffff; --ink:#14203a; --soft:#5a6a80; --faint:#8a97a8; --line:#e2e7ee; --hover:#f0f4fa;
+  --side:#ffffff; --nav-on:#eef1fb; --link:#001489;
+  --font:'IBM Plex Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  --cond:'IBM Plex Sans Condensed','IBM Plex Sans','Segoe UI',sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --card:#0f1830; --ink:#eaf0fb; --soft:#a4b5ca; --line:#24314f; --chip:#16213b;
-  --ground-a:#000e5c; --ground-b:#00062e; color-scheme:dark}}
+  --navy:#6f86ff; --bg:#0d1322; --panel:#141c2f; --ink:#e6ebf5; --soft:#a3b0c4; --faint:#7d8aa0; --line:#26304a; --hover:#1a2440;
+  --side:#111829; --nav-on:#1c2747; --link:#9fb0ff; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --card:#0f1830; --ink:#eaf0fb; --soft:#a4b5ca; --line:#24314f; --chip:#16213b;
-  --ground-a:#000e5c; --ground-b:#00062e; color-scheme:dark}
+  --navy:#6f86ff; --bg:#0d1322; --panel:#141c2f; --ink:#e6ebf5; --soft:#a3b0c4; --faint:#7d8aa0; --line:#26304a; --hover:#1a2440;
+  --side:#111829; --nav-on:#1c2747; --link:#9fb0ff; color-scheme:dark}
 *{box-sizing:border-box}
-body{margin:0;background:var(--deep);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
-  background-image:radial-gradient(circle at 12% 6%,rgba(255,198,0,.14),transparent 40%),radial-gradient(circle at 90% 60%,rgba(0,161,163,.16),transparent 45%),linear-gradient(165deg,var(--ground-a) 0%,var(--ground-b) 70%);
-  background-attachment:fixed;min-height:100%;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:22px 40px}
-main{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
-h1,h2,h3{font-family:var(--head);margin:0;text-wrap:balance;letter-spacing:-.01em}
+html,body{min-height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
 a{color:inherit}
-:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-.card{background:var(--card);border-radius:var(--r);box-shadow:0 24px 60px rgba(0,0,0,.30),0 2px 6px rgba(0,0,0,.16);overflow:hidden}
-.rule{height:6px;background:linear-gradient(90deg,var(--gold) 0 34%,var(--olive) 34% 67%,var(--teal) 67% 100%)}
+h1,h2{margin:0;font-weight:600;letter-spacing:-.005em;text-wrap:balance}
+:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
 
-/* header and stage menu */
-.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 20px;padding:16px 22px}
-.brand{display:flex;align-items:center;gap:14px;text-decoration:none;min-width:0}
-.brand img{width:150px;height:auto;flex:none}
-.brand b{display:block;font-family:var(--head);font-size:16px;line-height:1.2}
-.brand small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
-.menu{display:flex;flex-wrap:wrap;gap:6px}
-.menu a{display:flex;align-items:center;gap:7px;text-decoration:none;font-size:13.5px;font-weight:600;padding:8px 13px;border-radius:999px;border:1.5px solid var(--line);background:var(--chip);color:var(--ink);transition:border-color .15s}
-.menu a:hover{border-color:var(--soft)}
-.menu a .n{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11.5px;background:var(--sc,var(--navy));color:var(--son,#fff)}
-.menu a[aria-current="page"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:calc(100vh - 3px)}
+.side{background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:3px;height:calc(100vh - 3px);
+  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:18px;padding-block:20px 18px}
+.topline{position:sticky;top:0;z-index:5;height:3px;background:linear-gradient(90deg,#FFC600 0 34%,#8FAD15 34% 67%,#00A1A3 67% 100%)}
+.logo{width:150px;max-width:100%;height:auto;display:block}
+.appname{margin:14px 0 22px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.appname b{display:block;font-size:17px;font-weight:600;line-height:1.25;letter-spacing:-.01em}
+.appname small{display:block;font-size:11.5px;color:var(--soft)}
+.navlabel{font-family:var(--cond);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:0 0 6px 10px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:10px;text-decoration:none;padding:8px 10px;border-radius:7px;font-size:13px;color:var(--soft);font-weight:500}
+.nav a:hover{background:var(--hover);color:var(--ink)}
+.nav a[aria-current="page"]{background:var(--nav-on);color:var(--ink);font-weight:600}
+.nav .k{flex:none;width:20px;height:20px;border-radius:5px;display:grid;place-items:center;font-size:11px;font-weight:600;border:1.5px solid var(--sc,var(--line));color:var(--ink)}
+.nav a[aria-current="page"] .k{background:var(--sc,var(--navy));border-color:var(--sc,var(--navy));color:#0b1530}
+.nav .home .k{--sc:var(--navy)}
+.nav a.home[aria-current="page"] .k{color:#fff}
+.sidefoot{margin-top:auto;font-size:11px;color:var(--faint);line-height:1.4}
 
-/* page intro */
-.intro{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;padding:28px 32px}
-.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);font-weight:600}
-.intro h1{font-size:29px;font-weight:600;margin-top:6px;line-height:1.15}
-.intro p{margin:10px 0 0;color:var(--soft);max-width:60ch}
-.badge{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--chip);border:1px solid var(--line)}
-.badge i{width:9px;height:9px;border-radius:50%;background:var(--sc)}
-.stagehead{display:flex;gap:18px;align-items:flex-start}
-.bignum{flex:none;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-family:var(--head);font-size:26px;font-weight:700;background:var(--sc);color:var(--son)}
-.actions{display:flex;flex-direction:column;gap:10px;min-width:250px}
-.btn{display:flex;align-items:center;justify-content:space-between;gap:12px;text-decoration:none;border-radius:12px;padding:14px 18px;font-weight:600;font-size:15px;transition:transform .15s,box-shadow .15s,background .15s;border:1.5px solid transparent}
-.btn .arr{transition:transform .15s}
-.btn:hover{transform:translateY(-2px)}
-.btn:hover .arr{transform:translateX(3px)}
-.btn.primary{background:var(--navy);color:#fff;box-shadow:0 8px 20px rgba(0,20,137,.28)}
-.btn.primary:hover{background:var(--deep)}
-.btn.gold{background:var(--gold);color:#000b4d}
-.btn.ghost{background:var(--chip);color:var(--ink);border-color:var(--line)}
-.btn.ghost:hover{border-color:var(--soft)}
-.btn small{display:block;font-weight:400;font-size:12px;opacity:.8}
-.off{opacity:.5;pointer-events:none;box-shadow:none!important}
+.content{min-width:0;padding-block:30px 48px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.wrap{max-width:900px;display:flex;flex-direction:column;gap:18px}
 
-/* home: stage cards */
-.stagecards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.sc{display:flex;flex-direction:column;gap:10px;text-decoration:none;background:var(--card);border-radius:14px;padding:20px;border-top:6px solid var(--sc);box-shadow:0 10px 28px rgba(0,0,0,.22);transition:transform .15s}
-.sc:hover{transform:translateY(-3px)}
-.sc .bignum{width:44px;height:44px;font-size:19px}
-.sc h2{font-size:18px;font-weight:600}
-.sc p{margin:0;color:var(--soft);font-size:13.5px}
-.sc .when{font-size:12px;font-weight:600;color:var(--ink)}
-.sc .go{margin-top:auto;font-weight:600;font-size:14px;color:var(--ink)}
+.pagehead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 24px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.crumb{font-family:var(--cond);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);display:flex;align-items:center;gap:8px}
+.crumb i{width:8px;height:8px;border-radius:2px;background:var(--sc,var(--navy))}
+.pagehead h1{font-size:21px;margin-top:4px}
+.pagehead p{margin:4px 0 0;color:var(--soft);max-width:58ch}
+.meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:12px;color:var(--soft)}
+.meta b{color:var(--ink);font-weight:600}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:13px;font-weight:500;padding:8px 14px;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);transition:background .15s,border-color .15s}
+.btn:hover{border-color:var(--faint);background:var(--hover)}
+.btn.primary{background:#001489;border-color:#001489;color:#fff}
+.btn.primary:hover{background:#0a1f6e}
+.btn svg{width:13px;height:13px}
+.off{opacity:.45;pointer-events:none}
 
-/* section heading on the navy ground */
-.sec-head{color:var(--on-ground);display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 18px;margin-top:8px}
-.sec-head h2{font-size:20px;font-weight:600}
-.sec-head p{margin:0;color:var(--on-ground-soft);font-size:13.5px;max-width:62ch}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ph{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+.ph h2{font-size:13.5px}
+.ph span{font-size:12px;color:var(--faint)}
 
-/* unit tiles */
-.units{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.unit{background:var(--card);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 10px 28px rgba(0,0,0,.22)}
-.unit .band{height:7px;display:flex}
-.unit .band i{flex:1}
-.unit .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;flex:1}
-.unit .top{padding:0;display:flex;flex-wrap:nowrap;justify-content:flex-start;align-items:center;gap:12px}
-.unit .tag{flex:none;min-width:52px;height:40px;padding:0 8px;border-radius:10px;display:grid;place-items:center;font-weight:700;font-size:13.5px;letter-spacing:.04em}
-.unit h3{font-size:15.5px;font-weight:600;line-height:1.25}
-.unit .sub{font-size:12px;color:var(--soft)}
-.unit .row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
-.unit .row.one{grid-template-columns:1fr}
-.ub{display:block;text-align:center;text-decoration:none;font-weight:600;font-size:13.5px;padding:10px 8px;border-radius:9px;border:1.5px solid var(--line);color:var(--ink);background:var(--chip);transition:transform .15s,border-color .15s}
-.ub:hover{transform:translateY(-1px);border-color:var(--soft)}
-.ub.fill{border-color:transparent}
+/* stage list on home */
+.stagelist a{display:grid;grid-template-columns:28px minmax(0,1fr) auto 14px;gap:14px;align-items:center;padding:13px 16px;text-decoration:none;border-top:1px solid var(--line)}
+.stagelist a:first-child{border-top:0}
+.stagelist a:hover{background:var(--hover)}
+.stagelist .k{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font-weight:600;font-size:13px;background:var(--sc);color:#0b1530}
+.stagelist b{display:block;font-weight:600;font-size:13.5px}
+.stagelist small{display:block;color:var(--soft);font-size:12px}
+.stagelist .when{font-size:12px;color:var(--soft);white-space:nowrap}
+.stagelist .chev{color:var(--faint)}
 
-/* stage steps as a vertical sequence */
-.steps-card{padding:26px 30px 28px}
-.steps-card h2{font-size:19px;font-weight:600;margin-bottom:18px}
-.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.steps li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:16px;position:relative;padding-bottom:22px}
-.steps li:last-child{padding-bottom:0}
-.steps li::before{content:"";position:absolute;left:19px;top:40px;bottom:2px;width:2px;background:var(--line)}
-.steps li:last-child::before{display:none}
-.dot{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:700;border:2.5px solid var(--sc);color:var(--ink);background:var(--card);font-size:15px}
-.steps h3{font-size:16px;font-weight:600;margin-top:8px}
-.steps p{margin:4px 0 0;color:var(--soft);max-width:68ch}
-.who{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
-.who span{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;padding:3px 8px;border-radius:999px;border:1px solid var(--line)}
-.who .tc{color:#000b4d;background:#FFE680;border-color:#FFE680}
-.who .lms{color:#fff;background:var(--navy);border-color:var(--navy)}
-.who .int{color:#fff;background:var(--slate);border-color:var(--slate)}
-.who .mail{color:#000b4d;background:#d9f2f2;border-color:#9ad8d9}
-.who .auto{color:#000b4d;background:#e6efc4;border-color:#c9db8a}
-.mailnote{margin-top:10px;font-size:13px;padding:9px 12px;border-radius:9px;background:var(--chip);border:1px solid var(--line)}
-.mailnote b{font-weight:600}
+/* steps */
+.steps{list-style:none;margin:0;padding:0}
+.steps li{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
+.steps li:first-child{border-top:0}
+.steps .n{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11.5px;font-weight:600;border:1.5px solid var(--sc);color:var(--ink)}
+.steps b{display:block;font-weight:600;font-size:13.5px}
+.steps small{display:block;color:var(--soft);font-size:12.5px}
+.tags{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end}
+.tag{font-family:var(--cond);font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;background:var(--hover);color:var(--soft);border:1px solid var(--line);white-space:nowrap}
+.tag.mail{background:transparent;border-color:var(--teal);color:var(--ink);display:inline-flex;align-items:center;gap:4px}
+.tag.mail svg{width:11px;height:11px}
+.legend{padding:10px 16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint);display:flex;align-items:center;gap:6px}
 
-.callout{display:flex;gap:14px;align-items:flex-start;padding:18px 22px;border-left:6px solid var(--gold)}
-.callout b{display:block;font-size:15.5px}
-.callout p{margin:3px 0 0;color:var(--soft);font-size:13.5px}
+/* unit table */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{font-family:var(--cond);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:500;text-align:left;padding:9px 16px;background:var(--hover);border-bottom:1px solid var(--line);white-space:nowrap}
+tbody th,tbody td{padding:9px 16px;border-bottom:1px solid var(--line);text-align:left;font-weight:400;vertical-align:middle}
+tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--hover)}
+tbody th{min-width:200px}
+.uc{display:flex;align-items:center;gap:11px}
+.sw{flex:none;width:14px;height:14px;border-radius:3px}
+.un b{display:block;font-weight:500;font-size:13px}
+.un small{display:block;font-size:11.5px;color:var(--faint)}
+td{width:120px}
+.tl{font-size:12.5px;font-weight:500;color:var(--link);text-decoration:none;white-space:nowrap}
+.tl::after{content:" \2197";font-size:11px}
+.tl:hover{text-decoration:underline}
+.tl.off{color:var(--faint);opacity:1}
+.tl.off::after{content:""}
 
-/* reports */
-.shelf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.rep{display:flex;align-items:center;gap:10px;text-decoration:none;padding:12px 13px;border-radius:11px;border:1px solid var(--line);background:var(--card);font-size:13.5px;font-weight:600;transition:border-color .15s,transform .15s}
-.rep:hover{border-color:var(--soft);transform:translateY(-1px)}
-.rep i{flex:none;width:10px;height:30px;border-radius:3px}
-.rep small{display:block;font-weight:400;font-size:11.5px;color:var(--soft)}
-.rep.off{opacity:.6}
+.pager{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px}
+.pager a{text-decoration:none;color:var(--soft)}
+.pager a:hover{color:var(--ink)}
 
-.pipe{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:18px 22px}
-.pipe span{font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:9px;background:var(--chip);border:1px solid var(--line)}
-.pipe em{font-style:normal;color:var(--soft)}
-.pipe span.end{background:var(--navy);color:#fff;border-color:var(--navy)}
 
-.pager{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.pager a{text-decoration:none;color:var(--on-ground);font-weight:600;font-size:14px;padding:10px 16px;border-radius:10px;border:1.5px solid rgba(255,255,255,.35)}
-.pager a:hover{border-color:#fff}
-.foot{text-align:center;font-size:12.5px;color:var(--on-ground-soft);letter-spacing:.03em}
-
-@media (max-width:900px){
-  .units,.stagecards,.shelf{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .stagecards .sc:last-child{grid-column:1/-1}
+@media (max-width:820px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding-block:14px 10px;padding-right:max(16px,env(safe-area-inset-right,0px));padding-left:max(16px,env(safe-area-inset-left,0px))}
+  .appname{margin:10px 0 10px;padding-bottom:0;border:0}
+  .logo{width:120px}
+  .navlabel,.sidefoot{display:none}
+  .nav{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px}
+  .nav a{white-space:nowrap;padding:7px 10px}
+  .content{padding-block:22px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 }
-@media (max-width:640px){
-  .intro{grid-template-columns:1fr;padding:22px 20px}
-  .intro h1{font-size:23px}
-  .actions{min-width:0}
-  .units,.stagecards,.shelf{grid-template-columns:1fr}
-  .stagecards .sc:last-child{grid-column:auto}
-  .steps-card{padding:22px 18px}
-  .bignum{width:46px;height:46px;font-size:21px}
-  .brand img{width:120px}
+@media (max-width:560px){
+  .steps li{grid-template-columns:24px minmax(0,1fr);row-gap:6px}
+  .steps .tags{grid-column:2;justify-content:flex-start}
+  .stagelist a{grid-template-columns:28px minmax(0,1fr) 14px}
+  .stagelist .when{display:none}
+  tbody th{min-width:150px}
+  thead th,tbody th,tbody td{padding-left:12px;padding-right:12px}
+  td{width:auto}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<main>
-  <header class="card">
-    <div class="rule"></div>
-    <div class="top">
-      <a class="brand" href="index.html"><img src="logo.png" alt="Western Cape Education Department"><span><small>CTLI Process Team</small><b>Connect@CTLI Workflows 2027</b></span></a>
-      <nav class="menu" aria-label="Stages"><a href="index.html">Home</a><a href="stage-1.html" style="--sc:var(--gold);--son:#000b4d"><span class="n">1</span>Request and quality check</a><a href="stage-2.html" style="--sc:var(--teal);--son:#000b4d"><span class="n">2</span>Load participants and open</a><a href="stage-3.html" style="--sc:var(--olive);--son:#000b4d" aria-current="page"><span class="n">3</span>Close and report</a></nav>
-    </div>
-  </header>
-  <section class="card" style="--sc:var(--olive);--son:#000b4d">
-    <div class="intro">
-      <div class="stagehead"><div class="bignum">3</div>
-        <div><div class="eyebrow">Stage 3 of 3</div><h1>Close and report</h1><p>The course closes on your closing date. Completion reports are only generated once a course is closed, then the data flows into your unit dashboard and the CTLI Master Dashboard.</p><div class="badge"><i></i>On the closing date</div></div></div>
-      <div class="actions"><a class="btn primary" data-link="master" target="_blank" rel="noopener"><span>CTLI Master Dashboard<small>All units together</small></span><span class="arr">&rsaquo;</span></a><a class="btn ghost" data-link="reports" target="_blank" rel="noopener"><span>All 2027 reports<small>Full report folder</small></span><span class="arr">&rsaquo;</span></a></div>
-    </div>
-  </section>
-  <section class="card steps-card" style="--sc:var(--olive)">
-    <h2>What happens</h2>
-    <ol class="steps">
-      <li><div class="dot">1</div><div><h3>Course closes</h3><p>The LMS Admin closes the course on the closing date given in your request.</p><div class="who"><span class="lms">LMS Admin</span></div><div class="mailnote"><b>Automatic email:</b> You are told the course has closed and the report is being prepared.</div></div></li>
-      <li><div class="dot">2</div><div><h3>Completion report</h3><p>The LMS Admin downloads the completion data from Moodle and builds the course report.</p><div class="who"><span class="lms">LMS Admin</span></div></div></li>
-      <li><div class="dot">3</div><div><h3>Report sent</h3><p>The report goes to the Unit Head and the TC, and is filed in the unit's report folder below.</p><div class="who"><span class="lms">LMS Admin</span></div><div class="mailnote"><b>Automatic email:</b> You and your Unit Head receive the link to the report.</div></div></li>
-      <li><div class="dot">4</div><div><h3>Dashboards updated</h3><p>Completion data is added to the unit dashboard and stakeholders are informed.</p><div class="who"><span class="lms">LMS Admin</span><span class="tc">TC</span></div></div></li>
-      <li><div class="dot">5</div><div><h3>Master Dashboard</h3><p>All unit data flows through to the CTLI Master Dashboard.</p><div class="who"><span class="auto">Automatic</span></div></div></li>
-    </ol>
-  </section>
-
-  <section class="card pipe" aria-label="How the data flows">
-    <span>Unit cohort sheet</span><em>&rsaquo;</em><span>Master cohort sheet</span><em>&rsaquo;</em><span>Moodle upload</span><em>&rsaquo;</em><span>Completion report</span><em>&rsaquo;</em><span>Unit dashboard</span><em>&rsaquo;</em><span class="end">CTLI Master Dashboard</span>
-  </section>
-
-  <div class="sec-head"><h2>Completion reports</h2><p>One folder per unit. A report appears here only after its course has closed.</p></div>
-  <section class="shelf" id="shelf" aria-label="Completion report folders"></section>
-
-  <div class="sec-head"><h2>Unit dashboards</h2><p>Completion data for each unit, updated after every report.</p></div>
-  <section class="units" id="units" aria-label="Unit dashboards"></section>
-  <nav class="pager" aria-label="Previous and next"><a href="stage-2.html">&lsaquo; Stage 2: Load participants and open</a><a href="index.html">Back to home &rsaquo;</a></nav>
-
-  <div class="foot">Western Cape Education Department &middot; Connect@CTLI</div>
-</main>
+<div class="topline"></div>
+<div class="shell">
+  <aside class="side">
+    <a href="index.html"><img class="logo" src="logo.png" alt="Western Cape Education Department"></a>
+    <div class="appname"><b>Connect@CTLI Workflows 2027</b><small>CTLI Process Team</small></div>
+    <div class="navlabel">Workflow</div>
+    <nav class="nav" aria-label="Workflow stages"><a class="home" href="index.html"><span class="k">&#8962;</span>Overview</a><a href="stage-1.html" style="--sc:var(--gold)"><span class="k">1</span>Request and quality check</a><a href="stage-2.html" style="--sc:var(--teal)"><span class="k">2</span>Load participants and open</a><a href="stage-3.html" style="--sc:var(--olive)" aria-current="page"><span class="k">3</span>Close and report</a></nav>
+    <div class="sidefoot">Cape Teaching and Leadership Institute<br>Western Cape Education Department</div>
+  </aside>
+  <main class="content"><div class="wrap">
+    <header class="pagehead" style="--sc:var(--olive)">
+      <div><div class="crumb"><i></i>Stage 3 of 3</div><h1>Close and report</h1><p>Reports are generated only once the course has closed. The data then flows to the dashboards.</p><div class="meta"><span><b>When:</b> on the closing date</span><span><b>Report to:</b> Unit Head and TC</span></div></div>
+      <div class="btns"><a class="btn primary" data-link="master" target="_blank" rel="noopener">Master Dashboard<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a><a class="btn" data-link="reports" target="_blank" rel="noopener">All reports<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a></div>
+    </header>
+    <section class="panel" style="--sc:var(--olive)">
+      <div class="ph"><h2>Steps</h2><span>Who does it</span></div>
+      <ol class="steps"><li><span class="n">1</span><div><b>Course closes</b><small>On the closing date in the request.</small></div><div class="tags"><span class="tag">LMS Admin</span><span class="tag mail"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="3.5" width="12" height="9" rx="1.5"/><path d="m2.5 4.5 5.5 4 5.5-4"/></svg>Email</span></div></li><li><span class="n">2</span><div><b>Completion report built</b><small>From the Moodle completion data.</small></div><div class="tags"><span class="tag">LMS Admin</span></div></li><li><span class="n">3</span><div><b>Report sent and filed</b><small>To the Unit Head and TC, saved in the unit folder.</small></div><div class="tags"><span class="tag">LMS Admin</span><span class="tag mail"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="3.5" width="12" height="9" rx="1.5"/><path d="m2.5 4.5 5.5 4 5.5-4"/></svg>Email</span></div></li><li><span class="n">4</span><div><b>Dashboards updated</b><small>Unit dashboard first, then the CTLI Master Dashboard.</small></div><div class="tags"><span class="tag">LMS Admin</span><span class="tag">TC</span></div></li></ol>
+      <div class="legend"><span class="tag mail"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="3.5" width="12" height="9" rx="1.5"/><path d="m2.5 4.5 5.5 4 5.5-4"/></svg>Email</span> An automatic email goes out at this step.</div>
+    </section>
+    <section class="panel">
+      <div class="ph"><h2>Reports and dashboards</h2><span>Reports appear after a course closes</span></div>
+      <div class="tw"><table><thead><tr><th scope="col">Unit</th><th scope="col">Report folder</th><th scope="col">Dashboard</th></tr></thead><tbody id="ut"></tbody></table></div>
+    </section>
+    <nav class="pager" aria-label="Previous and next"><a href="stage-2.html">&larr; Stage 2</a><a href="index.html">Overview &rarr;</a></nav>
+  </div></main>
+</div>
 <script src="links.js"></script>
-<script>renderReports("shelf");renderUnits("units",["dashboard"]);</script>
+<script>renderUnitTable("ut",["reports","dashboard"]);</script>
 </body>
 </html>

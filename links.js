@@ -49,40 +49,22 @@ function fillTopLinks(){
   document.querySelectorAll("[data-link]").forEach(el=>setLink(el, LINKS[el.dataset.link]));
 }
 
-/* Unit tiles. show = ["cohort","dashboard"] or one of them */
-function renderUnits(target, show){
-  const box = document.getElementById(target); if(!box) return;
-  const label = {cohort:"Cohort sheet", dashboard:"Dashboard"};
+/* Unit link table. cols: any of "cohort", "reports", "dashboard" */
+function renderUnitTable(target, cols){
+  const tb = document.getElementById(target); if(!tb) return;
+  const label = {cohort:"Cohort sheet", reports:"Report folder", dashboard:"Dashboard"};
   UNITS.forEach(u=>{
     const L = LINKS.units[u.k] || {};
-    const t = document.createElement("article");
-    t.className = "unit";
-    t.innerHTML =
-      `<div class="band"><i style="background:${u.c[0]};flex:2"></i><i style="background:${u.c[1]}"></i></div>
-       <div class="body">
-         <div class="top"><div class="tag" style="background:${u.c[0]};color:${u.on}">${esc(u.k)}</div>
-           <div><h3>${esc(u.name)}</h3><div class="sub">${esc(u.sub)}</div></div></div>
-         <div class="row${show.length===1?' one':''}">${show.map((s,i)=>
-           `<a class="ub${i===0?' fill':''}" target="_blank" rel="noopener" data-kind="${s}"${i===0?` style="background:${u.c[0]};color:${u.on}"`:''}>${label[s]}</a>`).join("")}</div>
-       </div>`;
-    t.querySelectorAll(".ub").forEach(a=>{
-      setLink(a, L[a.dataset.kind]);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<th scope="row"><div class="uc"><span class="sw" style="background:linear-gradient(135deg,${u.c[0]} 60%,${u.c[1]} 60%)"></span><span class="un"><b>${esc(u.name)}</b><small>${esc(u.k)}${u.sub!==u.k?" &middot; "+esc(u.sub):""}</small></span></div></th>` +
+      cols.map(c=>`<td><a class="tl" data-kind="${c}" target="_blank" rel="noopener"></a></td>`).join("");
+    tr.querySelectorAll(".tl").forEach(a=>{
+      const url = L[a.dataset.kind];
+      a.textContent = url ? "Open" : "Not added";
+      setLink(a, url);
       a.setAttribute("aria-label", `${u.name} ${label[a.dataset.kind].toLowerCase()}`);
     });
-    box.appendChild(t);
-  });
-}
-
-/* Completion report folders, one per unit */
-function renderReports(target){
-  const box = document.getElementById(target); if(!box) return;
-  UNITS.forEach(u=>{
-    const L = LINKS.units[u.k] || {};
-    const r = document.createElement("a");
-    r.className = "rep"; r.target = "_blank"; r.rel = "noopener";
-    r.innerHTML = `<i style="background:linear-gradient(${u.c[0]} 65%,${u.c[1]} 65%)"></i><span>${esc(u.name)}<small>${L.reports ? "Open report folder" : "Folder not added yet"}</small></span>`;
-    setLink(r, L.reports);
-    box.appendChild(r);
+    tb.appendChild(tr);
   });
 }
 
