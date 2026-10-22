@@ -92,24 +92,77 @@ function parseCSV(text){
 }
 function applyLink(code, url){
   const [a,b] = code.split(".");
-  if(b){ if(LINKS.units[a] && b in LINKS.units[a]) LINKS.units[a][b] = url; }
-  else if(a in LINKS && a !== "units") LINKS[a] = url;
+  if(b){ if(LINKS.units[a] && b in LINKS.units[a]){ LINKS.units[a][b] = url; return true; } }
+  else if(a in LINKS && a !== "units"){ LINKS[a] = url; return true; }
+  return false;
 }
+
+/* What happened when the site tried to read the Google Sheet. Shown in the side menu. */
+const LINK_STATUS = {ok:false, text:(SHEET_CSV||"").trim() ? "Links: loading from the Google Sheet" : "Links: from links.js (no Google Sheet link set)"};
+const CODE_RE = /^(request|tracker|master|reports|[A-Za-z_]+\.(cohort|dashboard|reports))$/;
+
 const LINKS_READY = (async ()=>{
-  if(!SHEET_CSV) return;
+  const src = (SHEET_CSV || "").trim();
+  if(!src) return;
+  if(!/^https:\/\/docs\.google\.com\/spreadsheets\//i.test(src)){
+    LINK_STATUS.text = "Links problem: SHEET_CSV is not a Google Sheets link"; return;
+  }
+  if(/\/edit|\/pubhtml/i.test(src) || !/output=csv/i.test(src)){
+    LINK_STATUS.text = "Links problem: use the Publish to web link with .csv chosen (it ends in output=csv)"; return;
+  }
   try{
-    const r = await fetch(SHEET_CSV + (SHEET_CSV.includes("?") ? "&" : "?") + "t=" + Date.now(), {cache:"no-store"});
-    if(!r.ok) return;
-    parseCSV(await r.text()).forEach(row=>{
-      const code = (row[0]||"").trim(), url = (row[3]||"").trim();
-      if(code && /^https:\/\//i.test(url)) applyLink(code, url);
+    const r = await fetch(src + "&t=" + Date.now(), {cache:"no-store"});
+    if(!r.ok){ LINK_STATUS.text = "Links problem: the Google Sheet answered " + r.status + ". Is it still published?"; return; }
+    const text = await r.text();
+    if(/^\s*</.test(text)){ LINK_STATUS.text = "Links problem: the sheet sent a web page, not CSV. Publish the Links tab as .csv"; return; }
+    let codes = 0, used = 0;
+    parseCSV(text).forEach(row=>{
+      const cells = row.map(c=>(c||"").trim());
+      const code = cells.find(c=>CODE_RE.test(c));
+      if(!code) return;
+      codes++;
+      const url = cells.find(c=>/^https?:\/\//i.test(c));
+      if(url && applyLink(code, url)) used++;
     });
-  }catch(e){ /* sheet not reachable: keep the backup links */ }
+    if(!codes){ LINK_STATUS.text = "Links problem: no link codes found. Publish the Links tab, not the How To tab or Entire document"; return; }
+    LINK_STATUS.ok = true;
+    LINK_STATUS.text = `Links: ${used} of ${codes} loaded from the Google Sheet`;
+  }catch(e){
+    LINK_STATUS.text = "Links problem: the Google Sheet could not be reached from this page";
+  }
 })();
+
+function showLinkStatus(){
+  const el = document.getElementById("linkstatus"); if(!el) return;
+  const bad = /problem/.test(LINK_STATUS.text);
+  el.textContent = bad ? LINK_STATUS.text : "";   /* only shown when something needs fixing */
+  el.hidden = !bad;
+  el.classList.toggle("bad", bad);
+}
 
 /* Draw now with the backup links, then again once the sheet has loaded */
 function onLinks(draw){
-  const run = ()=>{ fillTopLinks(); draw && draw(); };
+  const run = ()=>{ fillTopLinks(); draw && draw(); showLinkStatus(); };
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", run); else run();
   LINKS_READY.then(run);
+}
+
+/* Unit cards with three buttons each (Overview page) */
+function renderUnitCards(target){
+  const box = document.getElementById(target); if(!box) return;
+  box.innerHTML = "";
+  const kinds = [["cohort","Cohort sheet"],["dashboard","Dashboard"],["reports","Reports"]];
+  UNITS.forEach(u=>{
+    const L = LINKS.units[u.k] || {};
+    const card = document.createElement("article");
+    card.className = "ucard";
+    card.style.setProperty("--u1", u.c[0]); card.style.setProperty("--u2", u.c[1]);
+    card.innerHTML = `<div class="uhead"><span class="sw"></span><div class="un"><b>${esc(u.name)}</b><small>${esc(u.k)} &middot; ${esc(u.sub)}</small></div></div>
+      <div class="ubtns">${kinds.map(([k,l])=>`<a class="ubtn" data-kind="${k}" target="_blank" rel="noopener">${l}</a>`).join("")}</div>`;
+    card.querySelectorAll(".ubtn").forEach(a=>{
+      setLink(a, L[a.dataset.kind]);
+      a.setAttribute("aria-label", `${u.name}: ${a.textContent.toLowerCase()}`);
+    });
+    box.appendChild(card);
+  });
 }
