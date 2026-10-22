@@ -5,7 +5,7 @@
    Google Sheet between the quotes below. After that, manage every link
    in the Google Sheet. You do not need to edit this file again.
    ===================================================================== */
-const SHEET_CSV = "1Lpn6nu4ny7kty44mdOweO7MzueIVMA06EVVKGgFcASY";
+const SHEET_CSV = "";
 
 /* Backup links. Only used if SHEET_CSV is empty or the sheet cannot be
    reached. A link in the Google Sheet always wins over one typed here. */
@@ -15,7 +15,8 @@ const LINKS = {
   master:  "",   // CTLI Master Dashboard
   reports: "",   // Drive folder: all 2027 completion reports
   units: {
-    LA:     {cohort:"", dashboard:"", reports:""},
+    LA_SMLDP: {cohort:"", dashboard:"", reports:""},
+    LA_SMLDC: {cohort:"", dashboard:"", reports:""},
     FP:     {cohort:"", dashboard:"", reports:""},
     IP:     {cohort:"", dashboard:"", reports:""},
     SP:     {cohort:"", dashboard:"", reports:""},
@@ -30,7 +31,8 @@ const LINKS = {
 /* Unit colours from the CTLI palettes. IP, SP and NTI are new additions.
    You should not need to change anything below this line. */
 const UNITS = [
-  {k:"LA",     name:"Leadership Academy",             sub:"LA",  c:["#00A1A3","#6E6259"], on:"#000b4d"},
+  {k:"LA_SMLDP", name:"School Management and Leadership Development Programme", sub:"Leadership Academy", c:["#00A1A3","#6E6259"], on:"#000b4d"},
+  {k:"LA_SMLDC", name:"School Management and Leadership Development Courses", sub:"Leadership Academy", c:["#6E6259","#00A1A3"], on:"#ffffff"},
   {k:"FP",     name:"Foundation Phase",               sub:"TPI", c:["#8FAD15","#8D6E97"], on:"#000b4d"},
   {k:"IP",     name:"Intermediate Phase",             sub:"TPI", c:["#BA0C2F","#A6BBC8"], on:"#ffffff"},
   {k:"SP",     name:"Senior Phase",                   sub:"TPI", c:["#5B7F95","#FFC600"], on:"#ffffff"},
@@ -62,7 +64,7 @@ function renderUnitTable(target, cols){
   UNITS.forEach(u=>{
     const L = LINKS.units[u.k] || {};
     const tr = document.createElement("tr");
-    tr.innerHTML = `<th scope="row"><div class="uc"><span class="sw" style="background:linear-gradient(135deg,${u.c[0]} 60%,${u.c[1]} 60%)"></span><span class="un"><b>${esc(u.name)}</b><small>${esc(u.k)}${u.sub!==u.k?" &middot; "+esc(u.sub):""}</small></span></div></th>` +
+    tr.innerHTML = `<th scope="row"><div class="uc"><span class="sw" style="background:linear-gradient(135deg,${u.c[0]} 60%,${u.c[1]} 60%)"></span><span class="un"><b>${esc(u.name)}</b><small>${u.name===u.k?esc(u.sub):esc(u.k)+(u.sub!==u.k?" &middot; "+esc(u.sub):"")}</small></span></div></th>` +
       cols.map(c=>`<td><a class="tl" data-kind="${c}" target="_blank" rel="noopener"></a></td>`).join("");
     tr.querySelectorAll(".tl").forEach(a=>{
       const url = L[a.dataset.kind];
