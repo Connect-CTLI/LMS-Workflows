@@ -147,22 +147,79 @@ function onLinks(draw){
   LINKS_READY.then(run);
 }
 
-/* Unit cards with three buttons each (Overview page) */
+/* Main units on the Overview page, in the order they appear.
+   "units" lists the sub-unit codes (k) from UNITS above. */
+const GROUPS = [
+  {k:"TPI",    name:"Teacher Practice Improvement", c:["#001489","#FFC600"], units:["FP","IP","SP","IE","NTI","FET"]},
+  {k:"LA",     name:"Leadership Academy",           c:["#00A1A3","#6E6259"], units:["LA_SMLDP","LA_SMLDC"]},
+  {k:"PD",     name:"Professional Development",     c:["#007DBA","#C4D600"], units:["PD"]},
+  {k:"EDULIS", name:"Library and information services", c:["#C4D600","#FFC600"], units:["EDULIS"]}
+];
+
+/* One sub-unit card with three buttons */
+function makeUnitCard(u){
+  const L = LINKS.units[u.k] || {};
+  const kinds = [["cohort","Cohort sheet"],["dashboard","Dashboard"],["reports","Reports"]];
+  const card = document.createElement("article");
+  card.className = "ucard";
+  card.style.setProperty("--u1", u.c[0]); card.style.setProperty("--u2", u.c[1]);
+  card.innerHTML = `<div class="uhead"><span class="sw"></span><div class="un"><b>${esc(u.name)}</b><small>${esc(u.k)} &middot; ${esc(u.sub)}</small></div></div>
+    <div class="ubtns">${kinds.map(([k,l])=>`<a class="ubtn" data-kind="${k}" target="_blank" rel="noopener">${l}</a>`).join("")}</div>`;
+  card.querySelectorAll(".ubtn").forEach(a=>{
+    setLink(a, L[a.dataset.kind]);
+    a.setAttribute("aria-label", `${u.name}: ${a.textContent.toLowerCase()}`);
+  });
+  return card;
+}
+
+/* All sub-unit cards in one grid (kept for any page that still uses it) */
 function renderUnitCards(target){
   const box = document.getElementById(target); if(!box) return;
   box.innerHTML = "";
-  const kinds = [["cohort","Cohort sheet"],["dashboard","Dashboard"],["reports","Reports"]];
-  UNITS.forEach(u=>{
-    const L = LINKS.units[u.k] || {};
-    const card = document.createElement("article");
-    card.className = "ucard";
-    card.style.setProperty("--u1", u.c[0]); card.style.setProperty("--u2", u.c[1]);
-    card.innerHTML = `<div class="uhead"><span class="sw"></span><div class="un"><b>${esc(u.name)}</b><small>${esc(u.k)} &middot; ${esc(u.sub)}</small></div></div>
-      <div class="ubtns">${kinds.map(([k,l])=>`<a class="ubtn" data-kind="${k}" target="_blank" rel="noopener">${l}</a>`).join("")}</div>`;
-    card.querySelectorAll(".ubtn").forEach(a=>{
-      setLink(a, L[a.dataset.kind]);
-      a.setAttribute("aria-label", `${u.name}: ${a.textContent.toLowerCase()}`);
+  UNITS.forEach(u=>box.appendChild(makeUnitCard(u)));
+}
+
+/* Overview: four main unit tiles. Clicking one opens its sub-units below. */
+let OPEN_GROUP = null;
+function renderUnitGroups(tilesId, drawerId){
+  const tiles = document.getElementById(tilesId), drawer = document.getElementById(drawerId);
+  if(!tiles || !drawer) return;
+  tiles.innerHTML = "";
+  const byK = Object.fromEntries(UNITS.map(u=>[u.k,u]));
+
+  function draw(){
+    tiles.querySelectorAll(".gtile").forEach(t=>t.setAttribute("aria-expanded", String(t.dataset.g===OPEN_GROUP)));
+    const g = GROUPS.find(x=>x.k===OPEN_GROUP);
+    drawer.innerHTML = "";
+    drawer.hidden = !g;
+    if(!g) return;
+    drawer.style.setProperty("--g1", g.c[0]); drawer.style.setProperty("--g2", g.c[1]);
+    const one = g.units.length === 1;
+    drawer.innerHTML = `<div class="gdhead"><div><b>${esc(g.name)}</b><small>${one ? "Cohort sheet, dashboard and reports" : g.units.length + " sub-units"}</small></div>
+      <button type="button" class="gclose" aria-label="Close ${esc(g.name)}">Close</button></div>
+      <div class="ugrid"></div>`;
+    const grid = drawer.querySelector(".ugrid");
+    g.units.forEach(k=>{ if(byK[k]) grid.appendChild(makeUnitCard(byK[k])); });
+    drawer.querySelector(".gclose").addEventListener("click", ()=>{
+      const t = tiles.querySelector(`[data-g="${OPEN_GROUP}"]`);
+      OPEN_GROUP = null; draw(); t && t.focus();
     });
-    box.appendChild(card);
+  }
+
+  GROUPS.forEach(g=>{
+    const subs = g.units.map(k=>byK[k]).filter(Boolean);
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "gtile"; b.dataset.g = g.k;
+    b.setAttribute("aria-controls", drawerId);
+    b.style.setProperty("--g1", g.c[0]); b.style.setProperty("--g2", g.c[1]);
+    const line = subs.length > 1 ? subs.map(u=>u.k.replace(/^LA_/,"")).join(" · ") : "Cohort sheet, dashboard, reports";
+    b.innerHTML = `<span class="gtop"><span class="gk">${esc(g.k)}</span>
+        <svg class="gchev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></span>
+      <span class="gname">${esc(g.name)}</span>
+      <span class="gsubs">${esc(line)}</span>
+      <span class="gdots" aria-hidden="true">${subs.map(u=>`<i style="background:linear-gradient(135deg,${u.c[0]} 60%,${u.c[1]} 60%)"></i>`).join("")}</span>`;
+    b.addEventListener("click", ()=>{ OPEN_GROUP = OPEN_GROUP === g.k ? null : g.k; draw(); });
+    tiles.appendChild(b);
   });
+  draw();
 }
