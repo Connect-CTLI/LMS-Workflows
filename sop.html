@@ -263,8 +263,8 @@ td{width:120px}
 .stp b{font-size:13px;font-weight:700;line-height:1.3}
 .stp .who{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:4px}
 .chip{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:20px;background:var(--panel);border:1px solid var(--line);color:var(--soft);white-space:nowrap}
-.tlwrap{overflow-x:auto;border-top:1px solid var(--line);padding-top:14px}
-.tlwrap h3{margin:0 0 6px;font-size:13.5px;color:var(--ink)}
+.tlwrap{overflow-x:auto}
+.tlwrap h2{margin:0 0 6px;font-size:15px;color:var(--ink)}
 .tline svg{display:block;min-width:640px;width:100%;height:auto}
 .tline text{font-family:var(--font)}
 
@@ -378,18 +378,15 @@ td{width:120px}
   </aside>
   <main class="content"><div class="wrap">
     <header class="pagehead" style="--sc:var(--gold)">
-      <div><div class="crumb"><i></i>Connect@CTLI Workflows 2027 &middot; Standard Operating Procedure</div><h1>LMS Operations Workflow 2027</h1><p>How a PLO moves from a training coordinator's request to a finished completion report. Click any step in the graphic to read the full instruction.</p></div>
+      <div><div class="crumb"><i></i>Connect@CTLI Workflows 2027 &middot; Standard Operating Procedure</div><h1>LMS Operations Workflow 2027</h1><p>How a PLO moves from a training coordinator's request to a finished completion report.</p></div>
       <div class="dl">
         <button class="btn primary" id="dlbtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13.5h10"/></svg>Download SOP (PDF)</button>
         <span class="dlnote" id="dlnote" role="status">A4 PDF with the WCED letterhead and live links</span>
       </div>
     </header>
 
-    <section class="panel ig" aria-labelledby="igh">
-      <div class="ighead"><h2 id="igh">How a PLO moves through Connect@CTLI</h2>
-        <p><svg class="env" viewBox="0 0 15 11" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x=".7" y=".7" width="13.6" height="9.6" rx="1.2"/><path d="m1.2 1.3 6.3 4.6 6.3-4.6"/></svg>An automatic email goes out at this step</p></div>
-      <div class="flow" id="flow"></div>
-      <div class="tlwrap"><h3>Where each stage sits against the four PLO dates</h3><div class="tline" id="tl"></div></div>
+    <section class="panel ig" aria-labelledby="tlh">
+      <div class="tlwrap"><h2 id="tlh">Where each stage sits against the four PLO dates</h2><div class="tline" id="tl"></div></div>
     </section>
 
     <article class="paper" id="sop" aria-label="Standard Operating Procedure document"></article>
@@ -405,15 +402,6 @@ const ENV = '<svg viewBox="0 0 15 11" fill="none" stroke="currentColor" stroke-w
 const CLOCK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.6"/></svg>';
 
 /* ---------- infographic ---------- */
-function drawFlow(){
-  $("#flow").innerHTML = SOP.stages.map(s => `
-    <div class="stg" style="--st:${s.colour}">
-      <div class="shd"><span class="num">${s.n}</span><div><span class="lab">Stage ${s.n}</span><b>${esc(s.name)}</b></div>
-        <span class="when">${CLOCK}${esc(s.when)}</span></div>
-      ${s.steps.map(st => `<a class="stp" href="#step-${st.id.replace('.','-')}"><span class="id">${st.id}</span><b>${esc(st.title)}</b>${st.email ? `<svg class="env" viewBox="0 0 15 11" fill="none" stroke="currentColor" stroke-width="1.4" role="img" aria-label="Automatic email"><rect x=".7" y=".7" width="13.6" height="9.6" rx="1.2"/><path d="m1.2 1.3 6.3 4.6 6.3-4.6"/></svg>` : "<span></span>"}
-        <span class="who">${st.who.map(w=>`<span class="chip">${esc(w)}</span>`).join("")}</span></a>`).join("")}
-    </div>`).join("");
-}
 function drawTimeline(){
   const marks = [["Request","Stage 1","#FFC600"],["Upload","1 to 2 weeks before","#00A1A3"],["Opening date","PLO opens","#00A1A3"],["Official start","As advertised","#5B7F95"],["Official end","As advertised","#5B7F95"],["Closing date","PLO closes","#8FAD15"],["Report","Stage 3","#8FAD15"]];
   const W = 860, x0 = 50, x1 = W - 50, st = (x1 - x0)/(marks.length - 1), y = 44;
@@ -517,7 +505,7 @@ $("#dlbtn").addEventListener("click", async () => {
   } finally { btn.disabled = false; }
 });
 
-drawFlow(); drawTimeline();
+drawTimeline();
 onLinks(() => { drawDoc(); if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); } });
 </script>
 </body>
