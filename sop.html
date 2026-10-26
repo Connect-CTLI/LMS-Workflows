@@ -9,8 +9,8 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
 /* Century Gothic where it is installed (WCED computers), otherwise the matching free Gothic face in /fonts */
-@font-face{font-family:"URW Gothic";src:local("URW Gothic"),local("URWGothic-Book"),url("fonts/URWGothic-Book.woff2") format("woff2");font-weight:400 500;font-display:swap}
-@font-face{font-family:"URW Gothic";src:local("URW Gothic Demi"),local("URWGothic-Demi"),url("fonts/URWGothic-Demi.woff2") format("woff2");font-weight:600 800;font-display:swap}
+@font-face{font-family:"URW Gothic";src:local("URW Gothic"),local("URWGothic-Book"),url("fonts/URWGothic-Book.woff2") format("woff2"),url("URWGothic-Book.woff2") format("woff2");font-weight:400 500;font-display:swap}
+@font-face{font-family:"URW Gothic";src:local("URW Gothic Demi"),local("URWGothic-Demi"),url("fonts/URWGothic-Demi.woff2") format("woff2"),url("URWGothic-Demi.woff2") format("woff2");font-weight:600 800;font-display:swap}
 </style>
 <style>
 /* Layout: department portal. Fixed side menu on desktop (top bar on phones), quiet light ground, compact panels and tables */
@@ -478,7 +478,9 @@ async function b64(url){
 let ASSETS = null;
 async function getAssets(){
   if (ASSETS) return ASSETS;
-  const [book, demi, logo] = await Promise.all([b64("fonts/URWGothic-Book.ttf"), b64("fonts/URWGothic-Demi.ttf"), b64("logo.png")]);
+  /* Fonts are read from the fonts folder, or from the main folder if they were uploaded there */
+  const first = async (paths) => { for (const p of paths) { try { return await b64(p); } catch (e) {} } throw new Error("missing:" + paths[0]); };
+  const [book, demi, logo] = await Promise.all([first(["fonts/URWGothic-Book.ttf", "URWGothic-Book.ttf"]), first(["fonts/URWGothic-Demi.ttf", "URWGothic-Demi.ttf"]), first(["logo.png"])]);
   ASSETS = {book, demi, logo: "data:image/png;base64," + logo};
   return ASSETS;
 }
@@ -501,7 +503,11 @@ $("#dlbtn").addEventListener("click", async () => {
       doc.save(filename); note("PDF downloaded.");
     }
   } catch(e){
-    note(e.message === "nolib" ? "The PDF tool did not load. Check your connection and refresh the page." : "The PDF could not be built. Refresh the page and try again.", true);
+    const miss = /^missing:/.test(e.message) ? e.message.slice(8) : "";
+    note(e.message === "nolib" ? "The PDF tool did not load. Check your connection and refresh the page."
+      : miss ? "The PDF could not be built: " + miss + " is missing from the site. Ask the Process Team to upload it."
+      : "The PDF could not be built. Refresh the page and try again.", true);
+    if (window.console) console.error("SOP PDF:", e);
   } finally { btn.disabled = false; }
 });
 
