@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LMS Operations SOP 2027</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+/* Century Gothic where it is installed (WCED computers), otherwise the matching free Gothic face in /fonts */
+@font-face{font-family:"URW Gothic";src:local("URW Gothic"),local("URWGothic-Book"),url("fonts/URWGothic-Book.woff2") format("woff2");font-weight:400 500;font-display:swap}
+@font-face{font-family:"URW Gothic";src:local("URW Gothic Demi"),local("URWGothic-Demi"),url("fonts/URWGothic-Demi.woff2") format("woff2");font-weight:600 800;font-display:swap}
+</style>
+<style>
+/* Layout: department portal. Fixed side menu on desktop (top bar on phones), quiet light ground, compact panels and tables */
+:root{
+  --navy:#001489; --navy-2:#0a1f6e; --gold:#FFC600; --teal:#00A1A3; --olive:#8FAD15; --slate:#5B7F95;
+  --bg:#f4f6f9; --panel:#ffffff; --ink:#14203a; --soft:#5a6a80; --faint:#8a97a8; --line:#e2e7ee; --hover:#f0f4fa;
+  --side:#ffffff; --nav-on:#eef1fb; --link:#001489;
+  --font:'Century Gothic','Gotham','URW Gothic','Avenir Next',sans-serif;
+  --cond:'Century Gothic','Gotham','URW Gothic','Avenir Next',sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --navy:#6f86ff; --bg:#0d1322; --panel:#141c2f; --ink:#e6ebf5; --soft:#a3b0c4; --faint:#7d8aa0; --line:#26304a; --hover:#1a2440;
+  --side:#111829; --nav-on:#1c2747; --link:#9fb0ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --navy:#6f86ff; --bg:#0d1322; --panel:#141c2f; --ink:#e6ebf5; --soft:#a3b0c4; --faint:#7d8aa0; --line:#26304a; --hover:#1a2440;
+  --side:#111829; --nav-on:#1c2747; --link:#9fb0ff; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2{margin:0;font-weight:600;letter-spacing:-.005em;text-wrap:balance}
+:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:calc(100vh - 3px)}
+.side{background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:3px;height:calc(100vh - 3px);
+  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:18px;padding-block:20px 18px}
+.topline{position:sticky;top:0;z-index:5;height:3px;background:linear-gradient(90deg,#FFC600 0 34%,#8FAD15 34% 67%,#00A1A3 67% 100%)}
+.logo{width:150px;max-width:100%;height:auto;display:block}
+.appname{margin:14px 0 22px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.appname b{display:block;font-size:17px;font-weight:600;line-height:1.25;letter-spacing:-.01em}
+.appname small{display:block;font-size:11.5px;color:var(--soft)}
+.navlabel{font-family:var(--cond);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:0 0 6px 10px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:10px;text-decoration:none;padding:8px 10px;border-radius:7px;font-size:13px;color:var(--soft);font-weight:500}
+.nav a:hover{background:var(--hover);color:var(--ink)}
+.nav a[aria-current="page"]{background:var(--nav-on);color:var(--ink);font-weight:600}
+.nav .k{flex:none;width:20px;height:20px;border-radius:5px;display:grid;place-items:center;font-size:11px;font-weight:600;border:1.5px solid var(--sc,var(--line));color:var(--ink)}
+.nav a[aria-current="page"] .k{background:var(--sc,var(--navy));border-color:var(--sc,var(--navy));color:#0b1530}
+.nav .home .k{--sc:var(--navy)}
+.nav a.home[aria-current="page"] .k{color:#fff}
+.ls{display:block;margin-top:8px;font-size:11px;line-height:1.35;color:var(--faint)}
+.ls.bad{color:#B3261E;font-weight:500}
+.sidefoot{margin-top:auto;font-size:11px;color:var(--faint);line-height:1.4}
+
+.content{min-width:0;padding-block:30px 48px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.wrap{max-width:900px;display:flex;flex-direction:column;gap:18px}
+
+.pagehead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 24px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.crumb{font-family:var(--cond);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);display:flex;align-items:center;gap:8px}
+.crumb i{width:8px;height:8px;border-radius:2px;background:var(--sc,var(--navy))}
+.pagehead h1{font-size:24px;margin-top:4px}
+.pagehead p{margin:4px 0 0;color:var(--soft);max-width:58ch}
+.meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:12px;color:var(--soft)}
+.meta b{color:var(--ink);font-weight:600}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:13px;font-weight:500;padding:8px 14px;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);transition:background .15s,border-color .15s}
+.btn:hover{border-color:var(--faint);background:var(--hover)}
+.btn.primary{background:#001489;border-color:#001489;color:#fff}
+.btn.primary:hover{background:#0a1f6e}
+.btn svg{width:13px;height:13px}
+.off{opacity:.45;pointer-events:none}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ph{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+.ph h2{font-size:13.5px}
+.ph span{font-size:12px;color:var(--faint)}
+
+/* stage list on home */
+.stagelist a{display:grid;grid-template-columns:28px minmax(0,1fr) auto 14px;gap:14px;align-items:center;padding:13px 16px;text-decoration:none;border-top:1px solid var(--line)}
+.stagelist a:first-child{border-top:0}
+.stagelist a:hover{background:var(--hover)}
+.stagelist .k{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font-weight:600;font-size:13px;background:var(--sc);color:#0b1530}
+.stagelist b{display:block;font-weight:600;font-size:13.5px}
+.stagelist small{display:block;color:var(--soft);font-size:12px}
+.stagelist .when{font-size:12px;color:var(--soft);white-space:nowrap}
+.stagelist .chev{color:var(--faint)}
+
+/* steps */
+.steps{list-style:none;margin:0;padding:0}
+.steps li{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
+.steps li:first-child{border-top:0}
+.steps .n{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11.5px;font-weight:600;border:1.5px solid var(--sc);color:var(--ink)}
+.steps b{display:block;font-weight:600;font-size:13.5px}
+.steps small{display:block;color:var(--soft);font-size:12.5px}
+.tags{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end}
+.tag{font-family:var(--cond);font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;background:var(--hover);color:var(--soft);border:1px solid var(--line);white-space:nowrap}
+.tag.mail{background:transparent;border-color:var(--teal);color:var(--ink);display:inline-flex;align-items:center;gap:4px}
+.tag.mail svg{width:11px;height:11px}
+.legend{padding:10px 16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint);display:flex;align-items:center;gap:6px}
+
+/* unit table */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{font-family:var(--cond);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:500;text-align:left;padding:9px 16px;background:var(--hover);border-bottom:1px solid var(--line);white-space:nowrap}
+tbody th,tbody td{padding:9px 16px;border-bottom:1px solid var(--line);text-align:left;font-weight:400;vertical-align:middle}
+tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--hover)}
+tbody th{min-width:200px}
+.uc{display:flex;align-items:center;gap:11px}
+.sw{flex:none;width:14px;height:14px;border-radius:3px}
+.un b{display:block;font-weight:500;font-size:13px}
+.un small{display:block;font-size:11.5px;color:var(--faint)}
+td{width:120px}
+.tl{font-size:12.5px;font-weight:500;color:var(--link);text-decoration:none;white-space:nowrap}
+.tl::after{content:" \2197";font-size:11px}
+.tl:hover{text-decoration:underline}
+.tl.off{color:var(--faint);opacity:1}
+.tl.off::after{content:""}
+
+.pager{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px}
+.pager a{text-decoration:none;color:var(--soft)}
+.pager a:hover{color:var(--ink)}
+
+
+@media (max-width:820px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding-block:14px 10px;padding-right:max(16px,env(safe-area-inset-right,0px));padding-left:max(16px,env(safe-area-inset-left,0px))}
+  .appname{margin:10px 0 10px;padding-bottom:0;border:0}
+  .logo{width:120px}
+  .navlabel,.sidefoot{display:none}
+  .nav{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px}
+  .nav a{white-space:nowrap;padding:7px 10px}
+  .content{padding-block:22px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+}
+@media (max-width:560px){
+  .steps li{grid-template-columns:24px minmax(0,1fr);row-gap:6px}
+  .steps .tags{grid-column:2;justify-content:flex-start}
+  .stagelist a{grid-template-columns:28px minmax(0,1fr) 14px}
+  .stagelist .when{display:none}
+  tbody th{min-width:150px}
+  thead th,tbody th,tbody td{padding-left:12px;padding-right:12px}
+  td{width:auto}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ---- v3: full-width layout, unit cards with buttons, stage side panel ---- */
+.wrap{max-width:1240px;width:100%}
+.qa{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.qa a{display:flex;flex-direction:column;gap:2px;text-decoration:none;padding:14px 16px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);transition:border-color .15s,background .15s}
+.qa a:hover{border-color:var(--faint);background:var(--hover)}
+.qa a b{font-weight:600;font-size:13.5px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.qa a b svg{width:13px;height:13px;flex:none;color:var(--faint)}
+.qa a small{color:var(--soft);font-size:12px}
+.qa a.primary{background:#001489;border-color:#001489;color:#fff}
+.qa a.primary small,.qa a.primary b svg{color:rgba(255,255,255,.75)}
+.qa a.primary:hover{background:#0a1f6e}
+.sechead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:6px}
+.sechead h2{font-size:14px}
+.sechead span{font-size:12px;color:var(--faint)}
+.ugrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
+.ucard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.uhead{display:flex;align-items:flex-start;gap:11px;min-width:0}
+.uhead .sw{margin-top:3px;width:12px;height:12px;border-radius:3px;background:linear-gradient(135deg,var(--u1) 60%,var(--u2) 60%)}
+.ucard .un{min-width:0}
+.ucard .un b{display:block;font-weight:600;font-size:13.5px;line-height:1.3}
+.ucard .un small{display:block;font-size:11.5px;color:var(--faint)}
+.ubtns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:auto}
+.ubtn{display:block;text-align:center;text-decoration:none;font-size:12.5px;font-weight:500;padding:7px 6px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:border-color .15s,background .15s}
+.ubtn:hover{border-color:var(--u1);background:var(--panel)}
+.ubtn.off{opacity:.4}
+.split{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.aside{display:flex;flex-direction:column;gap:14px}
+.aside .box{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.aside .k{font-family:var(--cond);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.aside .v{font-size:13.5px;font-weight:500}
+.aside .btn{justify-content:space-between;width:100%}
+.aside .next{display:flex;justify-content:space-between;align-items:center;gap:8px;text-decoration:none;padding:12px 16px;font-weight:600;font-size:13px;color:var(--ink)}
+.aside .next:hover{background:var(--hover)}
+.aside .next small{display:block;font-weight:400;color:var(--faint);font-size:11.5px}
+@media (max-width:1100px){.qa{grid-template-columns:repeat(2,minmax(0,1fr))}.split{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.qa{grid-template-columns:1fr}.ugrid{grid-template-columns:1fr}}
+
+/* ---- v3.1: more colour, stage graphic ---- */
+.pagehead{position:relative}
+.pagehead .btns{align-self:center}
+.flowg{display:block;width:300px;max-width:100%;height:auto}
+.flowg text{font-family:var(--font);font-weight:600}
+.flowg .lbl{font-weight:500;fill:var(--soft)}
+.qa a{border-top:3px solid var(--qc,var(--line))}
+.qa a.primary{border-top-color:#FFC600}
+.ucard{border-top:3px solid var(--u1)}
+.ubtn[data-kind="cohort"]{background:color-mix(in srgb,var(--u1) 12%,var(--panel));border-color:color-mix(in srgb,var(--u1) 35%,var(--line))}
+.ubtn:hover{background:color-mix(in srgb,var(--u1) 20%,var(--panel))}
+.steps .n{background:color-mix(in srgb,var(--sc) 22%,var(--panel))}
+.panel[style*="--sc"] .ph{border-top:3px solid var(--sc)}
+.nav a[aria-current="page"]{background:color-mix(in srgb,var(--sc,#001489) 14%,var(--side))}
+.aside .next{background:color-mix(in srgb,var(--teal) 8%,var(--panel))}
+@media (max-width:760px){.pagehead .btns{display:none}}
+.flowlink{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;border-radius:10px;padding:4px}
+.flowlink:hover{background:var(--hover)}
+.flowlink span{font-size:12px;font-weight:600;color:var(--link)}
+.nav .k svg{display:block}
+
+/* ---- v4: four main unit tiles that open to their sub-units ---- */
+.ggrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.gtile{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:4px;padding:16px 16px 14px;border-radius:10px;
+  background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--g1);color:var(--ink);font-family:var(--font);
+  transition:background .15s,border-color .15s,box-shadow .15s}
+.gtile:hover{background:color-mix(in srgb,var(--g1) 6%,var(--panel));border-color:color-mix(in srgb,var(--g1) 35%,var(--line));border-top-color:var(--g1)}
+.gtile:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.gtile[aria-expanded="true"]{background:color-mix(in srgb,var(--g1) 10%,var(--panel));border-color:color-mix(in srgb,var(--g1) 45%,var(--line));border-top-color:var(--g1);box-shadow:0 6px 18px -12px var(--g1)}
+.gtop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.gk{font-size:22px;font-weight:600;letter-spacing:-.01em;line-height:1.1}
+.gchev{width:16px;height:16px;color:var(--faint);transition:transform .2s}
+.gtile[aria-expanded="true"] .gchev{transform:rotate(180deg);color:var(--ink)}
+.gname{font-size:13px;font-weight:500;line-height:1.3}
+.gsubs{font-size:11.5px;color:var(--faint);line-height:1.35}
+.gdots{display:flex;gap:4px;margin-top:8px}
+.gdots i{width:10px;height:10px;border-radius:3px}
+.gdrawer{border:1px solid color-mix(in srgb,var(--g1) 30%,var(--line));border-radius:10px;background:color-mix(in srgb,var(--g1) 4%,var(--panel));padding:14px;display:flex;flex-direction:column;gap:12px;animation:gin .18s ease-out}
+.gdrawer[hidden]{display:none}
+.gdhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 2px}
+.gdhead b{display:block;font-size:14px;font-weight:600}
+.gdhead small{display:block;font-size:12px;color:var(--soft)}
+.gclose{font:inherit;font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.gclose:hover{background:var(--hover);border-color:var(--faint)}
+@keyframes gin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (max-width:900px){.ggrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:380px){.ggrid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.gdrawer{animation:none}.gchev{transition:none}}
+</style>
+</head>
+<body>
+<style>
+/* ---- SOP page ---- */
+.dl{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.dl .btn{padding:10px 16px;font-size:13.5px}
+.dl .btn svg{width:15px;height:15px}
+.dlnote{font-size:11.5px;color:var(--soft);max-width:34ch;text-align:right;min-height:1.4em}
+.dlnote.bad{color:#B3261E}
+
+.ig{padding:18px 16px 20px;display:flex;flex-direction:column;gap:18px}
+.ighead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 18px;align-items:baseline}
+.ighead h2{font-size:16px;color:var(--ink)}
+.ighead p{margin:0;font-size:12px;color:var(--soft);display:flex;align-items:center;gap:6px}
+.env{width:15px;height:11px;flex:none;color:var(--navy)}
+.flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px;position:relative}
+.stg{display:flex;flex-direction:column;gap:8px;min-width:0;position:relative}
+.stg:not(:last-child)::after{content:"";position:absolute;right:-19px;top:30px;border:7px solid transparent;border-left:11px solid var(--navy)}
+.shd{background:var(--st);color:#0b1530;border-radius:10px;padding:12px 14px;display:grid;grid-template-columns:30px minmax(0,1fr);gap:4px 10px;align-items:start;min-height:96px}
+.shd .num{width:30px;height:30px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:700;font-size:15px}
+.shd .lab{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.shd b{display:block;font-size:15px;line-height:1.25;margin-top:1px}
+.shd .when{grid-column:1/-1;font-size:12px;margin-top:4px;display:flex;align-items:center;gap:6px}
+.shd .when svg{width:13px;height:13px;flex:none}
+.stp{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 10px;align-items:start;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--ink);
+  background:color-mix(in srgb,var(--st) 13%,var(--panel));border:1px solid color-mix(in srgb,var(--st) 45%,var(--line));transition:transform .15s,border-color .15s}
+.stp:hover{border-color:var(--st);transform:translateY(-1px)}
+.stp .id{font-weight:700;font-size:11.5px;background:var(--st);color:#0b1530;border-radius:5px;padding:2px 6px;font-variant-numeric:tabular-nums}
+.stp b{font-size:13px;font-weight:700;line-height:1.3}
+.stp .who{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:20px;background:var(--panel);border:1px solid var(--line);color:var(--soft);white-space:nowrap}
+.tlwrap{overflow-x:auto;border-top:1px solid var(--line);padding-top:14px}
+.tlwrap h3{margin:0 0 6px;font-size:13.5px;color:var(--ink)}
+.tline svg{display:block;min-width:640px;width:100%;height:auto}
+.tline text{font-family:var(--font)}
+
+/* the document itself: printed-page look, white in both themes on purpose */
+.paper{--p-ink:#14203a;--p-soft:#5a6a80;--p-faint:#8a97a8;--p-line:#dfe4ec;--p-tint:#f3f5fa;--p-navy:#001489;
+  background:#fff;color:var(--p-ink);border:1px solid var(--line);border-radius:6px;box-shadow:0 1px 2px rgba(10,20,60,.06),0 8px 28px rgba(10,20,60,.08);
+  padding:34px clamp(18px,5vw,56px) 40px;max-width:900px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.lh{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px}
+.lh img{width:210px;max-width:60%;height:auto}
+.lh .org{text-align:right;font-size:12px;line-height:1.5;color:var(--p-soft)}
+.lh .org b{display:block;color:var(--p-navy);font-size:13.5px}
+.lh .org .em2{color:var(--p-navy);font-weight:700}
+.lhbar{height:5px;background:linear-gradient(90deg,#FFC600 0 33.3%,#8FAD15 33.3% 66.6%,#00A1A3 66.6%);margin:4px 0 14px}
+.kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--p-soft)}
+.paper h1{font-size:clamp(24px,4vw,32px);color:var(--p-navy);font-weight:700;margin:2px 0 0;letter-spacing:-.01em}
+.paper .sub{margin:0;color:var(--p-soft);font-size:14px}
+.ctrl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px;background:var(--p-tint);border:1px solid var(--p-line);border-radius:6px;padding:14px 16px;margin:12px 0 4px}
+.ctrl div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px;font-size:12.5px}
+.ctrl dt{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--p-faint);padding-top:2px}
+.ctrl dd{margin:0}
+.paper h2{font-size:18px;color:var(--p-navy);font-weight:700;margin:22px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--p-line);display:flex;gap:10px;scroll-margin-top:16px}
+.paper h2 i{font-style:normal;color:var(--p-faint)}
+.paper p{margin:0 0 6px;max-width:72ch;font-size:13.5px;line-height:1.6}
+.paper .muted{color:var(--p-soft)}
+.dlist{display:grid;grid-template-columns:minmax(150px,220px) minmax(0,1fr)}
+.dlist dt,.dlist dd{padding:8px 0;border-bottom:1px solid var(--p-line);margin:0;font-size:13px;line-height:1.5}
+.dlist dt{font-weight:700;padding-right:16px}
+.dlist.roles dt{color:var(--p-navy)}
+.ulist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 24px;margin:4px 0 8px;padding:0;list-style:none}
+.ulist li{display:grid;grid-template-columns:12px 80px minmax(0,1fr);gap:8px;align-items:center;font-size:12.5px;padding:3px 0}
+.ulist .sq{width:10px;height:10px;border-radius:2px}
+.ulist b{font-size:12px}
+.ulist span:last-child{color:var(--p-soft)}
+.sband{background:var(--st);color:#0b1530;border-radius:5px;padding:9px 14px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;align-items:baseline;margin-top:16px}
+.sband b{font-size:15px}
+.sband span{font-size:12.5px}
+.paper .sintro{color:var(--p-soft);font-size:13px;margin:8px 0 2px}
+.step{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--p-line);scroll-margin-top:16px}
+.step:target{background:color-mix(in srgb,var(--st) 14%,#fff);outline:6px solid color-mix(in srgb,var(--st) 14%,#fff)}
+.step .id{background:color-mix(in srgb,var(--st) 85%,#fff);color:#0b1530;font-weight:700;font-size:12px;border-radius:5px;text-align:center;padding:3px 0;align-self:start;font-variant-numeric:tabular-nums}
+.step h3{margin:0;font-size:14.5px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.step h3 small{font-weight:400;font-size:12px;color:var(--p-soft)}
+.step .em{display:inline-flex;align-items:center;gap:4px;color:var(--p-navy);font-weight:600}
+.step .em svg{width:13px;height:10px}
+.step p{grid-column:2;margin:2px 0 0}
+.step .res{color:var(--p-soft)}
+.step .tst{font-size:12.5px;color:var(--p-soft)}
+.step .tst b{color:var(--p-ink);background:var(--p-tint);border:1px solid var(--p-line);border-radius:4px;padding:1px 6px}
+.step .lk{grid-column:2;display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;align-items:center}
+.lk .k{font-size:10px;letter-spacing:.14em;font-weight:700;color:var(--p-faint)}
+.pl{font-size:12.5px;font-weight:700;color:var(--p-navy);text-decoration:none;border:1px solid color-mix(in srgb,var(--p-navy) 30%,#fff);border-radius:5px;padding:3px 9px;display:inline-flex;align-items:center;gap:4px}
+.pl:hover{background:#eef1fb}
+.pl.none{color:var(--p-faint);border-style:dashed;border-color:var(--p-line);font-weight:500;pointer-events:none}
+.pl.int{border-color:var(--p-line);color:var(--p-ink);font-weight:600}
+.rules{list-style:none;padding:0;margin:4px 0;display:flex;flex-direction:column;gap:6px;counter-reset:r}
+.rules li{display:grid;grid-template-columns:26px minmax(0,1fr);gap:8px;font-size:13.5px;line-height:1.5;counter-increment:r}
+.rules li::before{content:counter(r);width:22px;height:22px;border-radius:50%;background:var(--p-navy);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center}
+.ltab{overflow-x:auto}
+.ltab table{width:100%;border-collapse:collapse;font-size:12.5px;color:var(--p-ink)}
+.ltab th,.ltab td{padding:8px 10px 8px 0;border-bottom:1px solid var(--p-line);text-align:left;vertical-align:middle;background:none;font-weight:400}
+.ltab thead th{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--p-faint);background:var(--p-tint);padding-left:8px;white-space:nowrap}
+.ltab tbody tr:hover{background:none}
+.ltab .u{display:flex;align-items:center;gap:8px;min-width:210px}
+.ltab .u small{display:block;color:var(--p-soft);font-size:11.5px}
+.ltab td.desc{color:var(--p-soft)}
+.copy{font:inherit;font-size:12px;border:1px solid var(--p-line);background:#fff;color:var(--p-ink);border-radius:5px;padding:3px 9px;cursor:pointer}
+.copy:hover{border-color:var(--p-soft)}
+.sign{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 32px;margin-top:6px}
+.sign div{display:flex;flex-direction:column;gap:12px;font-size:12.5px}
+.sign .t{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--p-faint)}
+.sign .ln{display:grid;grid-template-columns:70px minmax(0,1fr);align-items:end;gap:8px;color:var(--p-soft)}
+.sign .ln i{border-bottom:1px solid var(--p-soft);height:16px}
+.pfoot{margin-top:24px;padding-top:8px;border-top:3px solid transparent;border-image:linear-gradient(90deg,#FFC600 0 33.3%,#8FAD15 33.3% 66.6%,#00A1A3 66.6%) 1;font-size:11px;color:var(--p-soft);display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px}
+
+@media (max-width:900px){
+  .flow{grid-template-columns:minmax(0,1fr);gap:24px}
+  .stg:not(:last-child)::after{right:auto;left:50%;top:auto;bottom:-22px;transform:translateX(-50%);border:9px solid transparent;border-top:11px solid var(--navy)}
+  .shd{min-height:0}
+}
+@media (max-width:620px){
+  .dl{align-items:stretch}.dlnote{text-align:left}
+  .ctrl{grid-template-columns:minmax(0,1fr)}
+  .ulist{grid-template-columns:minmax(0,1fr)}
+  .dlist{grid-template-columns:minmax(0,1fr)}
+  .dlist dt{border-bottom:0;padding-bottom:0}
+  .step{grid-template-columns:38px minmax(0,1fr)}
+  .sign{grid-template-columns:minmax(0,1fr)}
+  .lh .org{text-align:left}
+}
+@media (max-width:760px){.pagehead .dl{display:flex}}
+</style>
+<div class="topline"></div>
+<div class="shell">
+  <aside class="side">
+    <a href="index.html"><img class="logo" src="logo.png" alt="Western Cape Education Department"></a>
+    <div class="appname"><small>Cape Teaching and Leadership Institute</small><span id="linkstatus" class="ls" role="status"></span></div>
+    <div class="navlabel">Workflow</div>
+    <nav class="nav" aria-label="Pages"><a class="home" href="index.html"><span class="k">&#8962;</span>Overview</a><a href="sop.html" style="--sc:var(--gold)" aria-current="page"><span class="k"><svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 1.8h5.2L12 4.6v9.6H4z"/><path d="M6 7.5h4M6 10h4"/></svg></span>Standard Operating Procedure</a></nav>
+    <div class="sidefoot">Western Cape Education Department</div>
+  </aside>
+  <main class="content"><div class="wrap">
+    <header class="pagehead" style="--sc:var(--gold)">
+      <div><div class="crumb"><i></i>Connect@CTLI Workflows 2027 &middot; Standard Operating Procedure</div><h1>LMS Operations Workflow 2027</h1><p>How a course moves from a training coordinator's request to a finished completion report. Click any step in the graphic to read the full instruction.</p></div>
+      <div class="dl">
+        <button class="btn primary" id="dlbtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13.5h10"/></svg>Download SOP (PDF)</button>
+        <span class="dlnote" id="dlnote" role="status">A4 PDF with the WCED letterhead and live links</span>
+      </div>
+    </header>
+
+    <section class="panel ig" aria-labelledby="igh">
+      <div class="ighead"><h2 id="igh">How a course moves through Connect@CTLI</h2>
+        <p><svg class="env" viewBox="0 0 15 11" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x=".7" y=".7" width="13.6" height="9.6" rx="1.2"/><path d="m1.2 1.3 6.3 4.6 6.3-4.6"/></svg>An automatic email goes out at this step</p></div>
+      <div class="flow" id="flow"></div>
+      <div class="tlwrap"><h3>Where each stage sits against the four course dates</h3><div class="tline" id="tl"></div></div>
+    </section>
+
+    <article class="paper" id="sop" aria-label="Standard Operating Procedure document"></article>
+  </div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="links.js"></script>
+<script src="sop-content.js"></script>
+<script src="sop-pdf.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const ENV = '<svg viewBox="0 0 15 11" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x=".7" y=".7" width="13.6" height="9.6" rx="1.2"/><path d="m1.2 1.3 6.3 4.6 6.3-4.6"/></svg>';
+const CLOCK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.6"/></svg>';
+
+/* ---------- infographic ---------- */
+function drawFlow(){
+  $("#flow").innerHTML = SOP.stages.map(s => `
+    <div class="stg" style="--st:${s.colour}">
+      <div class="shd"><span class="num">${s.n}</span><div><span class="lab">Stage ${s.n}</span><b>${esc(s.name)}</b></div>
+        <span class="when">${CLOCK}${esc(s.when)}</span></div>
+      ${s.steps.map(st => `<a class="stp" href="#step-${st.id.replace('.','-')}"><span class="id">${st.id}</span><b>${esc(st.title)}</b>${st.email ? `<svg class="env" viewBox="0 0 15 11" fill="none" stroke="currentColor" stroke-width="1.4" role="img" aria-label="Automatic email"><rect x=".7" y=".7" width="13.6" height="9.6" rx="1.2"/><path d="m1.2 1.3 6.3 4.6 6.3-4.6"/></svg>` : "<span></span>"}
+        <span class="who">${st.who.map(w=>`<span class="chip">${esc(w)}</span>`).join("")}</span></a>`).join("")}
+    </div>`).join("");
+}
+function drawTimeline(){
+  const marks = [["Request","Stage 1","#FFC600"],["Upload","1 to 2 weeks before","#00A1A3"],["Opening date","Course opens","#00A1A3"],["Official start","As advertised","#5B7F95"],["Official end","As advertised","#5B7F95"],["Closing date","Course closes","#8FAD15"],["Report","Stage 3","#8FAD15"]];
+  const W = 860, x0 = 50, x1 = W - 50, st = (x1 - x0)/(marks.length - 1), y = 44;
+  const segs = [[0,1,"#FFC600"],[1,2,"#00A1A3"],[2,5,"#5B7F95"],[5,6,"#8FAD15"]];
+  const tops = [[0.5,"STAGE 1"],[1.5,"STAGE 2"],[3.5,"COURSE RUNS"],[5.5,"STAGE 3"]];
+  $("#tl").innerHTML = `<svg viewBox="0 0 ${W} 104" role="img" aria-label="Timeline: request, upload one to two weeks before opening, opening date, official start, official end, closing date, report">
+    ${segs.map(([a,b,c])=>`<line x1="${x0+a*st}" y1="${y}" x2="${x0+b*st}" y2="${y}" stroke="${c}" stroke-width="6" stroke-linecap="round"/>`).join("")}
+    ${tops.map(([p,t])=>`<text x="${x0+p*st}" y="${y-16}" text-anchor="middle" font-size="11" font-weight="700" letter-spacing="1.4" fill="var(--soft)">${t}</text>`).join("")}
+    ${marks.map((m,i)=>`<circle cx="${x0+i*st}" cy="${y}" r="9" fill="var(--panel)" stroke="${m[2]}" stroke-width="4"/>
+      <text x="${x0+i*st}" y="${y+30}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--ink)">${m[0]}</text>
+      <text x="${x0+i*st}" y="${y+47}" text-anchor="middle" font-size="11.5" fill="var(--soft)">${m[1]}</text>`).join("")}
+  </svg>`;
+}
+
+/* ---------- the SOP document ---------- */
+function pill(code){
+  const k = code.split(":")[1];
+  const lbl = {cohort:"Your unit cohort sheet", dashboard:"Your unit dashboard", reports:"Your unit report folder"}[k];
+  return `<a class="pl int" href="#links">${lbl} (section 7)</a>`;
+}
+function drawDoc(){
+  let n = 0; const H = (id, t) => `<h2 id="${id}"><i>${++n}</i>${esc(t)}</h2>`;
+  $("#sop").innerHTML = `
+    <div class="lh"><img src="logo.png" alt="Western Cape Government: Education"><div class="org"><b>${esc(SOP.org)}</b>${esc(SOP.dept)}<br>${esc(SOP.team)}<br><span class="em2">${SOP.email}</span></div></div>
+    <div class="lhbar"></div>
+    <div class="kicker">${esc(SOP.kind)}</div>
+    <h1>${esc(SOP.title)}</h1>
+    <p class="sub">From course request to completion report on Connect@CTLI</p>
+    <dl class="ctrl">${SOP.control.map(c=>`<div><dt>${esc(c[0])}</dt><dd>${esc(c[1])}</dd></div>`).join("")}</dl>
+    ${H("purpose","Purpose")}${SOP.purpose.map(p=>`<p>${esc(p)}</p>`).join("")}
+    ${H("scope","Scope")}<p>${esc(SOP.scope)}</p>
+    <ul class="ulist">${UNITS.map(u=>{const x = SOP.units.find(v=>v[0]===u.k)||[u.k,u.name]; return `<li><span class="sq" style="background:${u.c[0]}"></span><b>${esc(x[0])}</b><span>${esc(x[1])}</span></li>`}).join("")}</ul>
+    <p>Courses are run on Connect@CTLI (Moodle).</p>
+    ${H("roles","Roles and responsibilities")}
+    <dl class="dlist roles">${SOP.roles.map(r=>`<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join("")}</dl>
+    ${H("terms","Key terms")}
+    <dl class="dlist">${SOP.terms.map(r=>`<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join("")}</dl>
+    ${H("procedure","Procedure")}
+    <p class="muted">Each step lists who does it, what to do, what you should have at the end, and the links you need.</p>
+    ${SOP.stages.map(s=>`<section style="--st:${s.colour}">
+      <div class="sband"><b>Stage ${s.n}: ${esc(s.name)}</b><span>${esc(s.when)}</span></div>
+      <p class="sintro">${esc(s.intro)}</p>
+      ${s.steps.map(st=>`<div class="step" id="step-${st.id.replace('.','-')}"><span class="id">${st.id}</span>
+        <h3>${esc(st.title)} <small>Who: ${st.who.map(esc).join(", ")}</small>${st.email?`<small class="em">${ENV}Automatic email</small>`:""}</h3>
+        <p>${esc(st.detail)}</p><p class="res">Result: ${esc(st.output)}</p>${st.status?`<p class="tst">Tracker status: <b>${esc(st.status)}</b></p>`:""}
+        ${st.links.length?`<div class="lk"><span class="k">LINKS</span>${st.links.map(pill).join("")}</div>`:""}
+      </div>`).join("")}
+    </section>`).join("")}
+    ${H("rules","Rules to follow")}
+    <ol class="rules">${SOP.rules.map(r=>`<li>${esc(r)}</li>`).join("")}</ol>
+    ${H("links","Unit links")}
+    <p class="muted">Each unit's cohort sheet, dashboard and completion reports folder.</p>
+    <div class="ltab"><table><thead><tr><th>Unit</th><th>Cohort sheet</th><th>Dashboard</th><th>Reports</th></tr></thead><tbody>
+      ${UNITS.map(u=>{const UL = LINKS.units[u.k]||{}; return `<tr><td><div class="u"><span class="sq" style="width:10px;height:10px;border-radius:2px;flex:none;background:${u.c[0]}"></span><div><b>${esc(u.k)}</b><small>${esc(u.name)}</small></div></div></td>${["cohort","dashboard","reports"].map(k=>{const url=(UL[k]||"").trim(); return `<td>${url?`<a class="pl" href="${esc(url)}" target="_blank" rel="noopener">Open &#8599;</a>`:`<span class="pl none">Not added yet</span>`}</td>`}).join("")}</tr>`}).join("")}
+    </tbody></table></div>
+    ${H("approval","Approval")}
+    <div class="sign">${[["Prepared by","CTLI Process Team (LMS Administration)"],["Approved by",""]].map(s=>`<div><span class="t">${s[0]}</span>${s[1]?`<span>${s[1]}</span>`:`<span>&nbsp;</span>`}${["Name","Signature","Date"].map(l=>`<span class="ln">${l}<i></i></span>`).join("")}</div>`).join("")}</div>
+    <div class="pfoot"><span>${esc(SOP.kind)}: ${esc(SOP.title)} | Version ${esc((SOP.control.find(c=>c[0]==="Version")||[0,"1.0"])[1])}</span><span>${esc(SOP.org)}</span></div>`;
+}
+
+/* ---------- PDF download ---------- */
+async function b64(url){
+  const r = await fetch(url); if (!r.ok) throw new Error("Could not load " + url);
+  const bytes = new Uint8Array(await r.arrayBuffer()); let s = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+let ASSETS = null;
+async function getAssets(){
+  if (ASSETS) return ASSETS;
+  const [book, demi, logo] = await Promise.all([b64("fonts/URWGothic-Book.ttf"), b64("fonts/URWGothic-Demi.ttf"), b64("logo.png")]);
+  ASSETS = {book, demi, logo: "data:image/png;base64," + logo};
+  return ASSETS;
+}
+const note = (t, bad) => { const el = $("#dlnote"); el.textContent = t; el.classList.toggle("bad", !!bad); };
+$("#dlbtn").addEventListener("click", async () => {
+  const btn = $("#dlbtn"); btn.disabled = true; note("Building the PDF...");
+  const filename = "SOP LMS Operations Workflow 2027.pdf";
+  try {
+    if (!window.jspdf) throw new Error("nolib");
+    await LINKS_READY;
+    const doc = buildSopPdf(window.jspdf.jsPDF, await getAssets(), LINKS, UNITS);
+    const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
+    if (dl) {
+      note("Confirm the download in the prompt.");
+      try { await dl.save({filename, data: doc.output("blob")}); note("PDF saved."); }
+      catch(e){ note(e && e.code === "declined" ? "Download cancelled." : "This view cannot save files. Open the page in your browser and try again.", e && e.code !== "declined"); }
+    } else if (window.claude) {
+      note("Downloads are not available in this view. Open the page in your browser and try again.", true);
+    } else {
+      doc.save(filename); note("PDF downloaded.");
+    }
+  } catch(e){
+    note(e.message === "nolib" ? "The PDF tool did not load. Check your connection and refresh the page." : "The PDF could not be built. Refresh the page and try again.", true);
+  } finally { btn.disabled = false; }
+});
+
+drawFlow(); drawTimeline();
+onLinks(() => { drawDoc(); if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); } });
+</script>
+</body>
+</html>

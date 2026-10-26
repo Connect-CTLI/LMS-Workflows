@@ -22,15 +22,18 @@
  *  Open the Google Sheet your current form sends responses to and follow steps 2, 3, 5 and 6.
  *  Skip buildForm. If setup says a heading is missing, rename that form question to match.
  *
+ * The steps below match the Standard Operating Procedure (SOP), LMS Operations Workflow 2027.
+ *
  * HOW THE LMS ADMIN USES IT
- *  On the form responses tab, paste the Moodle course link into "Moodle link", then pick a Status.
+ *  On the form responses tab, fill in "Course short name", "Cohort" and "Moodle link", then pick a Status.
  *  For "Report sent", paste the report link into "Report link" first.
  *  The Request Tracker tab updates by itself. Never type on the Request Tracker tab.
  */
 
 const SETTINGS = {
-  LMS_ADMIN_EMAIL: 'lmsadmin@example.org',                        // shared LMS Admin inbox
+  LMS_ADMIN_EMAIL: 'connect.ctli@wced.info',                      // shared LMS Admin inbox
   ACCESS_PAGE: 'https://connect-ctli.github.io/LMS-Workflows/',   // Connect@CTLI Workflows 2027 site
+  SOP_PAGE: 'https://connect-ctli.github.io/LMS-Workflows/sop.html', // Standard Operating Procedure page
   SENDER_NAME: 'Connect@CTLI LMS Admin',
   RESPONSES_SHEET: ''   // leave empty: the script finds the form responses tab by itself
 };
@@ -53,7 +56,7 @@ const STAGES = [
   ['Report sent',         'Report sent', 3, 'Complete. Data added to the unit dashboard and the CTLI Master Dashboard', 'Done']
 ];
 const STATUS = STAGES.map(function (s) { return s[0]; });
-const ADMIN_COLS = ['Status', 'Moodle link', 'Report link', 'Status updated', 'Last email'];
+const ADMIN_COLS = ['Status', 'Course short name', 'Cohort', 'Moodle link', 'Report link', 'Status updated', 'Last email'];
 
 const UNITS = [
   ['LA_SMLDP', 'School Management and Leadership Development Programme'],
@@ -76,7 +79,11 @@ const C = { navy: '#001489', deep: '#000b4d', gold: '#FFC600', teal: '#00A1A3', 
    1. BUILD THE FORM (optional)
    ===================================================================== */
 function buildForm() {
-  const ss = SpreadsheetApp.getActive();
+  const ss = sheetOrStop_();
+  if (ss.getFormUrl()) {
+    return ui_('This sheet already has a form linked to it, so no new form was made. ' +
+      'Use Form > Go to live form to open it. To start again, unlink and delete the old form first.');
+  }
   const form = FormApp.create('Course Activation Request 2027');
   form.setDescription(
     'Use this form to ask the LMS Admin team (PDD) to activate a course on Connect@CTLI for a new cohort.\n\n' +
@@ -96,9 +103,6 @@ function buildForm() {
   form.addMultipleChoiceItem().setTitle('Request type')
     .setChoiceValues(['New course', 'Existing course, new cohort', 'Copy of an existing course']).setRequired(true);
   form.addTextItem().setTitle(Q.course).setHelpText('The full course name as it should appear on Connect@CTLI').setRequired(true);
-  form.addTextItem().setTitle(Q.short)
-    .setHelpText('The Moodle short name. It must match Connect@CTLI exactly, for example LA_StratMan').setRequired(true);
-  form.addTextItem().setTitle(Q.cohort).setHelpText('Your cohort code, for example FP_C1_27').setRequired(true);
   const n = form.addTextItem().setTitle('Expected number of participants').setRequired(true);
   n.setValidation(FormApp.createTextValidation().requireWholeNumber().setHelpText('Please type a number, for example 45').build());
 
@@ -132,11 +136,12 @@ function buildForm() {
    2. SETUP (run once, and again whenever you want to rebuild the Tracker)
    ===================================================================== */
 function setup() {
-  const ss = SpreadsheetApp.getActive();
+  const ss = sheetOrStop_();
   const rs = responses_();
   if (!rs) return ui_('No form responses tab found yet. Run buildForm first, or link your current form to this sheet.');
 
-  const missing = Object.keys(Q).filter(function (k) { return !colIdx_(rs, Q[k]); }).map(function (k) { return Q[k]; });
+  const missing = Object.keys(Q).filter(function (k) { return k !== 'short' && k !== 'cohort' && !colIdx_(rs, Q[k]); })
+    .map(function (k) { return Q[k]; });
   if (missing.length) {
     return ui_('These form questions are missing or worded differently:\n\n' + missing.join('\n') +
       '\n\nRename them in the form so they match exactly, then run setup again.');
@@ -150,7 +155,7 @@ function setup() {
   rs.getRange(2, col_(rs, 'Status'), rs.getMaxRows() - 1, 1).setDataValidation(rule);
   rs.getRange(2, col_(rs, 'Status updated'), rs.getMaxRows() - 1, 1).setNumberFormat('d mmm yyyy HH:mm');
   rs.getRange(1, 1, 1, rs.getLastColumn()).setFontWeight('bold').setBackground(C.navy).setFontColor('#ffffff').setFontFamily(FONT);
-  rs.getRange(1, col_(rs, 'Status'), 1, ADMIN_COLS.length).setBackground(C.deep);
+  ADMIN_COLS.forEach(function (h) { rs.getRange(1, col_(rs, h)).setBackground(C.deep); });   /* LMS Admin columns in dark navy */
   rs.setFrozenRows(1);
 
   /* Requests that came in before setup get "Requested" */
@@ -196,14 +201,16 @@ function onRequestSubmit(e) {
   const r = read_(sh, row);
 
   send_(SETTINGS.LMS_ADMIN_EMAIL,
-    'New course activation request: ' + r.short + ' (' + r.unit + ')',
+    'New course activation request: ' + label_(r) + ' (' + r.unit + ')',
     'A new course activation request has come in.\n\n' + summary_(r) +
-    '\nPlease activate the course on Connect@CTLI, keep it hidden, add the Moodle link to the request sheet and set the Status to "Activated (hidden)".');
+    '\nPlease activate the course on Connect@CTLI and keep it hidden. On the request sheet, add the Moodle link' +
+    (r.short && r.cohort ? '' : !r.short && !r.cohort ? ', the Course short name and the Cohort' : !r.short ? ' and the Course short name' : ' and the Cohort') + ', then set the Status to "Activated (hidden)".');
 
   send_(r.email,
-    'We have received your request: ' + r.short,
+    'We have received your request: ' + label_(r),
     'Hi ' + r.tc + ',\n\nThank you. Your request to activate the course below has reached the LMS Admin team.\n\n' + summary_(r) +
-    '\nYou will get another email with the link to the course once it has been activated.' + trackerLine_());
+    '\nYou will get another email with the link to the course once it has been activated.' + trackerLine_() +
+    (SETTINGS.SOP_PAGE ? '\nStandard Operating Procedure: ' + SETTINGS.SOP_PAGE : ''));
 
   stamp_(sh, row, 'Request alert and receipt');
 }
@@ -223,48 +230,52 @@ function onStatusChange(e) {
   switch (status) {
     case 'Activated (hidden)':
       if (!r.link) return warn_(sh, row, 'Add the Moodle link before setting this status.');
-      subject = 'Your course is activated: ' + r.short;
+      if (!r.short) return warn_(sh, row, 'Add the Course short name before setting this status.');
+      if (!r.cohort) return warn_(sh, row, 'Add the Cohort before setting this status.');
+      subject = 'Your course is activated: ' + label_(r);
       body = 'Hi ' + r.tc + ',\n\nYour course has been activated on Connect@CTLI. It is hidden from participants for now.\n\n' +
-        'Course link: ' + r.link + '\n\nNext step: the quality check. PDD will arrange to test the course with you. ' +
+        'Course link: ' + r.link + '\nCourse short name: ' + r.short + '\nCohort: ' + r.cohort + '\n\nNext step: the quality check. PDD will arrange to test the course with you. ' +
         'The course stays hidden until the quality check is confirmed.\n\n' + summary_(r);
       break;
     case 'QC passed':
       to.push(SETTINGS.LMS_ADMIN_EMAIL);
-      subject = 'Quality check passed: ' + r.short;
+      subject = 'Quality check passed: ' + label_(r);
       body = 'Hi ' + r.tc + ',\n\nThe quality check for this course is confirmed.\n\n' +
         'Next step: please make sure all participants are on your unit cohort sheet. ' +
         'Participants are uploaded 1 to 2 weeks before the opening date (' + r.open + ').\n\n' + summary_(r);
       break;
     case 'Participants loaded':
-      subject = 'Participants loaded: ' + r.short;
+      subject = 'Participants loaded: ' + label_(r);
       body = 'Hi ' + r.tc + ',\n\nThe participants from your cohort sheet are now loaded on the course.\n\n' +
         'Please check the participant list here: ' + r.link + '\n\n' +
         'Additions and corrections can still be made. If your unit intern makes changes on Moodle, please let the LMS Admin know.\n\n' +
         'The course will open on ' + r.open + '.';
       break;
     case 'Course open':
-      subject = 'Your course is open: ' + r.short;
+      subject = 'Your course is open: ' + label_(r);
       body = 'Hi ' + r.tc + ',\n\nYour course is now open to participants.\n\nCourse link: ' + r.link +
         '\n\nOfficial dates: ' + r.start + ' to ' + r.end + '.\nThe course closes for reporting on ' + r.close + '.';
       break;
     case 'Course closed':
-      subject = 'Course closed: ' + r.short;
+      subject = 'Course closed: ' + label_(r);
       body = 'Hi ' + r.tc + ',\n\nYour course is now closed for reporting. The LMS Admin will now generate the completion report and send it to you and your Unit Head.';
       break;
-    case 'Report sent':
+    case 'Report sent': {
       if (!r.report) return warn_(sh, row, 'Add the Report link before setting this status.');
       const head = unitHead_(r.unit);
       if (head) to.push(head);
-      subject = 'Completion report: ' + r.short;
-      body = 'Good day,\n\nThe completion report for ' + r.course + ' (' + r.short + ', ' + r.cohort + ') is ready.\n\n' +
+      subject = 'Completion report: ' + label_(r);
+      body = 'Good day,\n\nThe completion report for ' + r.course + ' (' + label_(r) + ', ' + r.cohort + ') is ready.\n\n' +
         'Report: ' + r.report + '\n\n' +
-        'The completion data is being added to the ' + r.unit + ' dashboard and will flow through to the CTLI Master Dashboard.';
+        'The completion data is being added to the CTLI Master Dashboard and will flow through to the ' + r.unit + ' dashboard.';
       break;
+    }
     default:
       return;
   }
   body += trackerLine_();
   if (SETTINGS.ACCESS_PAGE) body += '\nConnect@CTLI Workflows 2027: ' + SETTINGS.ACCESS_PAGE;
+  if (SETTINGS.SOP_PAGE) body += '\nStandard Operating Procedure: ' + SETTINGS.SOP_PAGE;
   send_(to.join(','), subject, body);
   stamp_(sh, row, status);
 }
@@ -316,8 +327,8 @@ function trackerFormulas_(rsName, cols) {
   f.X5 = '=ARRAYFORMULA(IF(A5:A="","",IFERROR(VLOOKUP(A5:A,{' + key + ',' + rng(cols.updated) + '},2,FALSE),"")))';
   f.Y5 = '=ARRAYFORMULA(IF(A5:A="","",IFERROR(IF(VLOOKUP(A5:A,{' + key + ',' + rng(cols.link) + '},2,FALSE)="","",' +
     'HYPERLINK(VLOOKUP(A5:A,{' + key + ',' + rng(cols.link) + '},2,FALSE),"Open course")),"")))';
-  f.A3 = '="Requests: "&COUNTIF(A5:A,"REQ-*")&"     In progress: "&COUNTIFS(L5:L,">=1",L5:L,"<=6")&"     Complete: "&COUNTIF(L5:L,7)' +
-    '&"     Need attention: "&COUNTIF(W5:W,"?*")';
+  f.A3 = '="Requests: "&COUNTIF(A5:A,"REQ-*")&"   In progress: "&COUNTIFS(L5:L,">=1",L5:L,"<=6")&"   Complete: "&COUNTIF(L5:L,7)' +
+    '&"   Attention: "&COUNTIF(W5:W,"?*")';
   f.M3 = '="STAGE 1: REQUEST AND QC  ("&COUNTIFS(L5:L,">=1",L5:L,"<=3")&")"';
   f.P3 = '="STAGE 2: LOAD AND OPEN  ("&COUNTIFS(L5:L,">=4",L5:L,"<=5")&")"';
   f.R3 = '="STAGE 3: CLOSE AND REPORT  ("&COUNTIF(L5:L,6)&")"';
@@ -329,7 +340,7 @@ function buildTracker_(ss, rs) {
   let t = ss.getSheetByName(TRACKER);
   if (t) { t.getProtections(SpreadsheetApp.ProtectionType.SHEET).forEach(function (p) { p.remove(); }); }
   else t = ss.insertSheet(TRACKER);
-  t.clear(); t.clearConditionalFormats();
+  t.clear(); t.clearConditionalFormatRules();
   t.getRange(1, 1, t.getMaxRows(), t.getMaxColumns()).breakApart();
   if (t.getMaxRows() < 1000) t.insertRowsAfter(t.getMaxRows(), 1000 - t.getMaxRows());
   if (t.getMaxColumns() < W) t.insertColumnsAfter(t.getMaxColumns(), W - t.getMaxColumns());
@@ -343,16 +354,28 @@ function buildTracker_(ss, rs) {
   t.getRange(1, 1, 1000, W).setFontFamily(FONT).setFontSize(10).setVerticalAlignment('middle');
 
   /* Title and summary */
-  t.getRange('A1:Y1').merge().setValue('COURSE ACTIVATION REQUEST TRACKER 2027')
-    .setBackground(C.navy).setFontColor('#ffffff').setFontSize(15).setFontWeight('bold');
-  t.getRange('A2:Y2').merge()
-    .setValue('Where every Connect@CTLI course request is. This tab updates by itself. Find your course by unit, course short name or cohort. ' +
-      '✓ means a step is done and ● shows where the course is now.')
-    .setBackground(C.deep).setFontColor('#ffffff').setFontSize(10);
-  t.getRange('A3:L3').merge().setFormula(f.A3).setFontWeight('bold').setFontColor(C.navy).setBackground(C.band);
-  t.getRange('M3:O3').merge().setFormula(f.M3).setBackground(C.gold).setFontColor(C.deep);
-  t.getRange('P3:Q3').merge().setFormula(f.P3).setBackground(C.teal).setFontColor('#ffffff');
-  t.getRange('R3:S3').merge().setFormula(f.R3).setBackground(C.olive).setFontColor(C.deep);
+  /* Merges stop at column D so the first four columns can stay frozen */
+  t.getRange('A1:Y1').setBackground(C.navy);
+  t.getRange('A1:D1').merge();
+  t.getRange('E1:Y1').merge();
+  t.getRange('A1').setValue('COURSE ACTIVATION REQUEST TRACKER 2027')
+    .setFontColor('#ffffff').setFontSize(15).setFontWeight('bold');
+  t.getRange('A2:Y2').setBackground(C.deep).setFontColor('#ffffff').setFontSize(10);
+  t.getRange('A2:D2').merge();
+  t.getRange('E2:Y2').merge();
+  t.getRange('A2').setValue('✓ step done     ● where the course is now');
+  t.getRange('E2').setValue('Where every Connect@CTLI course request is. This tab updates by itself. ' +
+    'Find your course by unit, course short name or cohort.');
+  t.getRange('A3:L3').setBackground(C.band);
+  t.getRange('A3:D3').merge();
+  t.getRange('E3:L3').merge();
+  t.getRange('A3').setFormula(f.A3).setFontWeight('bold').setFontColor(C.navy);
+  t.getRange('M3:O3').merge();
+  t.getRange('M3').setFormula(f.M3).setBackground(C.gold).setFontColor(C.deep);
+  t.getRange('P3:Q3').merge();
+  t.getRange('P3').setFormula(f.P3).setBackground(C.teal).setFontColor('#ffffff');
+  t.getRange('R3:S3').merge();
+  t.getRange('R3').setFormula(f.R3).setBackground(C.olive).setFontColor(C.deep);
   t.getRange('T3:Y3').merge().setBackground(C.band);
   t.getRange('M3:S3').setFontWeight('bold').setFontSize(8.5).setHorizontalAlignment('center').setWrap(true);
 
@@ -438,12 +461,20 @@ function responses_() {
   const ss = SpreadsheetApp.getActive();
   if (SETTINGS.RESPONSES_SHEET) return ss.getSheetByName(SETTINGS.RESPONSES_SHEET);
   const found = ss.getSheets().filter(function (sh) {
-    return sh.getLastColumn() > 0 && colIdx_(sh, Q.short) && colIdx_(sh, Q.open) && sh.getName() !== TRACKER;
+    return sh.getLastColumn() > 0 && colIdx_(sh, Q.course) && colIdx_(sh, Q.open) && sh.getName() !== TRACKER;
   });
   if (!found.length) return null;
   const linked = found.filter(function (sh) { return sh.getFormUrl(); });
   const pool = linked.length ? linked : found;
   return pool[pool.length - 1];
+}
+
+/* The script must live inside the Google Sheet (Extensions > Apps Script), not on its own */
+function sheetOrStop_() {
+  const ss = SpreadsheetApp.getActive();
+  if (!ss) throw new Error('This script is not attached to a Google Sheet. Open the "Course Activation Requests 2027" sheet, ' +
+    'go to Extensions > Apps Script, and paste the script there. Then run it from that editor.');
+  return ss;
 }
 
 function norm_(s) { return String(s).trim().toLowerCase(); }
@@ -474,14 +505,17 @@ function read_(sh, row) {
   const unitRaw = String(get(Q.unit) || '');
   return {
     email: get(Q.email), tc: get(Q.tc) || 'colleague', unit: unitRaw.split(':')[0].trim(),
-    course: get(Q.course), short: get(Q.short), cohort: get(Q.cohort),
+    course: get(Q.course), short: String(get(Q.short) || '').trim(), cohort: String(get(Q.cohort) || '').trim(),
     open: d(get(Q.open)), start: d(get(Q.start)), end: d(get(Q.end)), close: d(get(Q.close)),
     link: get('Moodle link'), report: get('Report link')
   };
 }
 
+/* The short name once the LMS Admin has added it, otherwise the course name */
+function label_(r) { return r.short || r.course; }
+
 function summary_(r) {
-  return 'Unit: ' + r.unit + '\nCourse: ' + r.course + '\nShort name: ' + r.short + '\nCohort: ' + r.cohort +
+  return 'Unit: ' + r.unit + '\nCourse: ' + r.course + '\nShort name: ' + (r.short || 'to be added by the LMS Admin') + '\nCohort: ' + (r.cohort || 'to be added by the LMS Admin') +
     '\nOpening date: ' + r.open + '\nStart date: ' + r.start + '\nEnd date: ' + r.end +
     '\nClosing date (for reporting): ' + r.close + '\n';
 }
@@ -505,7 +539,9 @@ function trackerLine_() {
 
 function send_(to, subject, body) {
   if (!to) return;
-  MailApp.sendEmail({ to: to, subject: subject, body: body + '\n\nKind regards\nConnect@CTLI LMS Admin', name: SETTINGS.SENDER_NAME });
+  /* Replies go to the shared LMS Admin inbox, not to whoever installed the script */
+  MailApp.sendEmail({ to: to, subject: subject, body: body + '\n\nKind regards\nConnect@CTLI LMS Admin\n' + SETTINGS.LMS_ADMIN_EMAIL,
+    name: SETTINGS.SENDER_NAME, replyTo: SETTINGS.LMS_ADMIN_EMAIL });
 }
 
 function stamp_(sh, row, what) {
@@ -517,6 +553,9 @@ function warn_(sh, row, msg) {
   sh.getRange(row, col_(sh, 'Last email')).setValue('Not sent: ' + msg);
 }
 
+/* Results show in the Execution log in the editor, and as a short note on the sheet. No pop-up to wait on. */
 function ui_(msg) {
-  try { SpreadsheetApp.getUi().alert(msg); } catch (err) { Logger.log(msg); }
+  Logger.log(msg);
+  try { SpreadsheetApp.getActive().toast(msg.split('\n')[0] + ' The full details are in the Execution log.', 'Course Requests 2027', 15); }
+  catch (err) { /* no sheet open: the log is enough */ }
 }
