@@ -1,6 +1,6 @@
 # Connect@CTLI Workflows 2027
 
-Access site for CTLI training coordinators: course requests, the Request Tracker, unit cohort sheets, dashboards, completion reports and the LMS Operations Workflow 2027 Standard Operating Procedure (SOP).
+Access site for CTLI training coordinators: PLO shell requests, the Request Tracker, unit cohort sheets, dashboards, completion reports and the LMS Operations Workflow 2027 Standard Operating Procedure (SOP).
 
 Site: https://connect-ctli.github.io/LMS-Workflows/
 
@@ -28,17 +28,17 @@ Site: https://connect-ctli.github.io/LMS-Workflows/
 
 All links are managed in the Site Links Google Sheet, on the Links tab. Link codes:
 
-- `request`: Course Activation Request form
-- `tracker`: Request Tracker tab of the Course Activation Requests 2027 sheet
+- `request`: Shell Activation Request form
+- `tracker`: Request Tracker tab of the Shell Activation Requests 2027 sheet
 - `master`: CTLI Master Dashboard
 - `reports`: Drive folder with all 2027 completion reports
 - Per unit: `UNIT.cohort`, `UNIT.dashboard`, `UNIT.reports`, for example `FP.cohort` or `LA_SMLDP.dashboard`
 
 Unit codes: LA_SMLDP, LA_SMLDC, FP, IP, SP, IE, NTI, FET, EDULIS, PD.
 
-## Course Activation Requests script
+## Shell Activation Requests script
 
-`Course_Requests_2027.gs` is not part of the website. It belongs in the Course Activation Requests 2027 Google Sheet (Extensions > Apps Script). The setup steps are at the top of the script.
+`Course_Requests_2027.gs` is not part of the website. It belongs in the Shell Activation Requests 2027 Google Sheet (Extensions > Apps Script). The setup steps are at the top of the script. On a form that is already live, run `updateLiveForm` once and then `setup`.
 
 ## Updating the SOP
 

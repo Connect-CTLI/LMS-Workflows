@@ -10,7 +10,7 @@ const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTP1JAVJV8ip8
 /* Backup links. Only used if SHEET_CSV is empty or the sheet cannot be
    reached. A link in the Google Sheet always wins over one typed here. */
 const LINKS = {
-  request: "",   // Course Activation Request form
+  request: "",   // Shell Activation Request form
   tracker: "",   // Request tracker sheet (form responses with Status column)
   master:  "",   // CTLI Master Dashboard
   reports: "",   // Drive folder: all 2027 completion reports

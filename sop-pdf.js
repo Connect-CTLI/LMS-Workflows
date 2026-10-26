@@ -54,7 +54,7 @@ function buildSopPdf(jsPDF, assets, LINKS_IN, UNITS_IN){
   font("b", 8.5, SOFT); doc.text(SOP.kind.toUpperCase(), M, y + 3, {charSpace:0.4});
   y += 6;
   font("b", 22, NAVY); doc.text(SOP.title, M, y + 7.5); y += 13;
-  font("n", 10, SOFT); doc.text("From course request to completion report on Connect@CTLI", M, y + 3.5); y += 9;
+  font("n", 10, SOFT); doc.text("From PLO request to completion report on Connect@CTLI", M, y + 3.5); y += 9;
 
   /* document control table */
   const half = CW/2, vw = half - 32;
@@ -93,12 +93,12 @@ function buildSopPdf(jsPDF, assets, LINKS_IN, UNITS_IN){
     font("n", 8.5, SOFT); doc.text(unit[1], M + 30, y + 3.6);
     y += uRow;
   });
-  para("Courses are run on Connect@CTLI (Moodle). The LMS Admin can be reached at " + SOP.email + ".", 9.5, INK);
+  para("PLOs, including courses, webinars and other events, run on Connect@CTLI (Moodle). The LMS Admin can be reached at " + SOP.email + ".", 9.5, INK);
 
   /* ---------- Infographic page ---------- */
   newPage();
   font("b", 8.5, SOFT); doc.text("AT A GLANCE", M, y + 3, {charSpace:0.4}); y += 6;
-  font("b", 15, NAVY); doc.text("How a course moves through Connect@CTLI", M, y + 5.5); y += 10;
+  font("b", 15, NAVY); doc.text("How a PLO moves through Connect@CTLI", M, y + 5.5); y += 10;
   font("n", 9, SOFT); doc.text("Three stages, twelve steps. The envelope shows where an automatic email goes out.", M, y + 3); y += 8;
 
   const gap = 7, colW = (CW - 2*gap)/3, top = y;
@@ -145,15 +145,15 @@ function buildSopPdf(jsPDF, assets, LINKS_IN, UNITS_IN){
   });
   y = colBottom + 6;
 
-  /* timeline of the four course dates */
-  font("b", 11, NAVY); doc.text("Where each stage sits against the course dates", M, y + 4); y += 10;
+  /* timeline of the four PLO dates */
+  font("b", 11, NAVY); doc.text("Where each stage sits against the PLO dates", M, y + 4); y += 10;
   const marks = [
     ["Request", "Stage 1", "#FFC600"],
     ["Upload", "1 to 2 weeks before", "#00A1A3"],
-    ["Opening date", "Course opens", "#00A1A3"],
+    ["Opening date", "PLO opens", "#00A1A3"],
     ["Official start", "As advertised", "#5B7F95"],
     ["Official end", "As advertised", "#5B7F95"],
-    ["Closing date", "Course closes", "#8FAD15"],
+    ["Closing date", "PLO closes", "#8FAD15"],
     ["Report", "Stage 3", "#8FAD15"]
   ];
   const tx0 = M + 8, tx1 = M + CW - 8, step = (tx1 - tx0)/(marks.length - 1), ty = y + 9;
@@ -162,7 +162,7 @@ function buildSopPdf(jsPDF, assets, LINKS_IN, UNITS_IN){
   font("b", 7.4, SOFT);
   doc.text("STAGE 1", tx0 + 0.5*step, ty - 4, {align:"center"});
   doc.text("STAGE 2", tx0 + 1.5*step, ty - 4, {align:"center"});
-  doc.text("COURSE RUNS", tx0 + 3.5*step, ty - 4, {align:"center"});
+  doc.text("PLO RUNS", tx0 + 3.5*step, ty - 4, {align:"center"});
   doc.text("STAGE 3", tx0 + 5.5*step, ty - 4, {align:"center"});
   marks.forEach((m, i) => {
     const mx = tx0 + i*step;
@@ -202,6 +202,32 @@ function buildSopPdf(jsPDF, assets, LINKS_IN, UNITS_IN){
   heading("5", "Procedure");
   para("Each step lists who does it, what to do, what you should have at the end, and the links you need.", 9.5, SOFT);
   y += 2;
+  /* What you can request: highlighted box */
+  {
+    const R = SOP.requests, bx = M, bw = CW, pad = 4.5, tw = bw - 2*pad - 10;
+    font("n", 9);
+    const items = R.items.map(it => { font("b", 9.6); const t = doc.splitTextToSize(it.title, tw); font("n", 9); const l = doc.splitTextToSize(it.lead, tw); return {t, l, h: t.length*lh(9.6) + l.length*lh(9) + 4.5}; });
+    font("b", 9.5); const outro = doc.splitTextToSize(R.outro, bw - 2*pad);
+    const boxH = pad + 6 + lh(9.5) + 2 + items.reduce((a, b) => a + b.h + 2, 0) + outro.length*lh(9.5) + pad + 1;
+    need(boxH + 4);
+    doc.setFillColor("#f3f5fc"); doc.setDrawColor(NAVY); doc.setLineWidth(0.6);
+    doc.roundedRect(bx, y, bw, boxH, 2, 2, "FD");
+    let yy = y + pad;
+    font("b", 12, NAVY); doc.text(R.title, bx + pad, yy + 4.2); yy += 7;
+    font("n", 9.5, INK); doc.text(R.intro, bx + pad, yy + 3.2); yy += lh(9.5) + 2;
+    items.forEach((it, i) => {
+      doc.setFillColor("#ffffff"); doc.setDrawColor(LINE); doc.setLineWidth(0.25);
+      doc.roundedRect(bx + pad, yy, bw - 2*pad, it.h, 1.2, 1.2, "FD");
+      doc.setFillColor(i === 2 ? "#00A1A3" : "#FFC600"); doc.rect(bx + pad, yy, 1.4, it.h, "F");
+      doc.setFillColor(NAVY); doc.circle(bx + pad + 6, yy + 4.2, 2.6, "F");
+      font("b", 8.6, "#ffffff"); doc.text(String(i + 1), bx + pad + 6, yy + 5.2, {align:"center"});
+      font("b", 9.6, INK); doc.text(it.t, bx + pad + 11, yy + 4.6);
+      font("n", 9, INK); doc.text(it.l, bx + pad + 11, yy + 4.6 + it.t.length*lh(9.6));
+      yy += it.h + 2;
+    });
+    font("b", 9.5, NAVY); doc.text(outro, bx + pad, yy + 3.4);
+    y += boxH + 5;
+  }
   SOP.stages.forEach(s => {
     need(30);
     doc.setFillColor(s.colour); doc.roundedRect(M, y, CW, 11, 1.5, 1.5, "F");
