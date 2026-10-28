@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Connect@CTLI Unit Links 2027</title>
+<title>CTLI LMS Operations Workflow</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -46,18 +46,36 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
 .how .arr{color:var(--faint)}
 .how .plus{margin-left:auto;color:var(--soft)}
 
-/* Jump to a unit */
-.jump{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 8px}
-.jump a{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-size:13px;font-weight:600;color:var(--ink);padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel)}
-.jump a:hover{border-color:var(--faint);background:var(--hover)}
-.jump a i{width:10px;height:10px;border-radius:3px;background:linear-gradient(135deg,var(--u1) 60%,var(--u2) 60%)}
+/* The four unit shells. Clicking one opens its units underneath. */
+.shells{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}
+.shell{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:18px 18px 16px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--line);border-top:5px solid var(--g1);color:var(--ink);font-family:var(--font);
+  transition:background .15s,border-color .15s,box-shadow .15s}
+.shell:hover{background:color-mix(in srgb,var(--g1) 7%,var(--panel));border-color:color-mix(in srgb,var(--g1) 40%,var(--line));border-top-color:var(--g1)}
+.shell:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.shell[aria-expanded="true"]{background:color-mix(in srgb,var(--g1) 11%,var(--panel));border-color:color-mix(in srgb,var(--g1) 50%,var(--line));border-top-color:var(--g1);box-shadow:0 8px 20px -14px var(--g1)}
+.stop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sk{font-size:26px;font-weight:600;letter-spacing:-.01em;line-height:1.1}
+.chev{width:18px;height:18px;color:var(--faint);transition:transform .2s}
+.shell[aria-expanded="true"] .chev{transform:rotate(180deg);color:var(--ink)}
+.sname{font-size:14px;font-weight:600;line-height:1.3}
+.ssubs{font-size:12px;color:var(--faint);line-height:1.35}
+.sdots{display:flex;gap:4px;margin-top:6px}
+.sdots i{width:11px;height:11px;border-radius:3px}
+.drawer{margin-top:14px;border:1px solid color-mix(in srgb,var(--g1) 35%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--g1) 5%,var(--panel));padding:16px;display:flex;flex-direction:column;gap:14px;animation:din .18s ease-out}
+.drawer[hidden]{display:none}
+.dhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dhead b{display:block;font-size:16px;font-weight:600}
+.dhead small{display:block;font-size:12.5px;color:var(--soft)}
+.close{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.close:hover{background:var(--hover);border-color:var(--faint)}
+.hint{margin:14px 0 0;color:var(--faint);font-size:13px;text-align:center}
+.hint[hidden]{display:none}
+@keyframes din{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 
 /* Unit groups and cards */
-.group{margin-top:26px}
-.group h2{margin:0 0 10px;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,520px),1fr));gap:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,500px),1fr));gap:14px}
 .unit{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--u1);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
-.unit:target{box-shadow:0 0 0 2px var(--u1)}
 .uh{display:flex;align-items:flex-start;gap:12px}
 .uh .sw{flex:none;margin-top:4px;width:14px;height:14px;border-radius:4px;background:linear-gradient(135deg,var(--u1) 60%,var(--u2) 60%)}
 .uh b{display:block;font-size:16px;font-weight:600;line-height:1.3}
@@ -84,6 +102,7 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
 .status.bad{display:block}
 .foot{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
+@media (max-width:900px){.shells{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){
   h1{font-size:22px}
   .top .tag{display:none}
@@ -92,7 +111,7 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
   .flow .arr{transform:rotate(90deg);height:14px}
   .how .plus{margin-left:0;width:100%}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.drawer{animation:none}}
 </style>
 </head>
 <body>
@@ -105,8 +124,8 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
 </header>
 
 <main class="wrap">
-  <h1>Your unit links</h1>
-  <p class="lead">Find your unit below. Everything you need is in three steps, in this order, with the Request Tracker underneath.</p>
+  <h1>CTLI LMS Operations Workflow</h1>
+  <p class="lead">Choose your unit. Everything you need is in three steps, in this order, with the Request Tracker underneath.</p>
 
   <div class="how" aria-label="How it works">
     <span class="pill" style="--pc:var(--gold)"><i>1</i><b>Cohort sheet</b></span><span class="arr">&rarr;</span>
@@ -116,8 +135,9 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
   </div>
 
   <p id="linkstatus" class="status" role="status"></p>
-  <nav class="jump" id="jump" aria-label="Jump to your unit"></nav>
-  <div id="units"></div>
+  <section class="shells" id="shells" aria-label="Units"></section>
+  <section class="drawer" id="drawer" aria-live="polite" hidden></section>
+  <p class="hint" id="hint">Click your unit to open it.</p>
 
   <footer class="foot">
     <span>Western Cape Education Department &middot; CTLI Process Team</span>
@@ -127,13 +147,6 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
 
 <script src="links.js"></script>
 <script>
-/* Units in the order they appear on the page */
-const ORDER = [
-  {name:"Leadership Academy",           units:["LA_SMLDP","LA_SMLDC"]},
-  {name:"Teacher Practice Improvement", units:["FP","IP","SP","IE","NTI","FET"]},
-  {name:"Professional Development",     units:["PD"]},
-  {name:"EDULIS",                       units:["EDULIS"]}
-];
 const STEPS = [
   {k:"cohort",    n:1, label:"Cohort sheet", note:"Add your participants",  c:"var(--gold)"},
   {k:"reports",   n:2, label:"Reports",      note:"Completion reports",     c:"var(--teal)"},
@@ -142,44 +155,56 @@ const STEPS = [
 const ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
 const OUT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg>';
 
+/* One unit: Cohort sheet > Reports > Dashboard, with the Request Tracker underneath */
+function unitCard(u){
+  const L = LINKS.units[u.k] || {};
+  const card = document.createElement("article");
+  card.className = "unit";
+  card.style.setProperty("--u1", u.c[0]); card.style.setProperty("--u2", u.c[1]);
+  card.innerHTML = `<div class="uh"><span class="sw"></span><div><b>${esc(u.name)}</b><small>${esc(u.k)}${u.name!==u.sub?" &middot; "+esc(u.sub):""}</small></div></div>
+    <ol class="flow">${STEPS.map((s,i)=>`${i?`<li class="arr" aria-hidden="true">${ARROW}</li>`:""}<li><a class="step" data-kind="${s.k}" style="--sc:${s.c}" target="_blank" rel="noopener"><i>${s.n}</i><span><b>${s.label}</b><small>${s.note}</small></span></a></li>`).join("")}</ol>
+    <a class="track" target="_blank" rel="noopener">${OUT}Request Tracker</a>`;
+  card.querySelectorAll(".step").forEach(a=>{
+    setLink(a, L[a.dataset.kind]);
+    a.setAttribute("aria-label", `${u.name}: step ${a.querySelector("i").textContent}, ${a.querySelector("b").textContent}`);
+  });
+  const t = card.querySelector(".track");
+  setLink(t, LINKS.tracker);
+  t.setAttribute("aria-label", `${u.name}: Request Tracker`);
+  return card;
+}
+
+/* The four unit shells (from GROUPS in links.js). Clicking one opens its units underneath. */
+let OPEN = null;
 function draw(){
   const byK = Object.fromEntries(UNITS.map(u=>[u.k,u]));
-  const box = document.getElementById("units"), jump = document.getElementById("jump");
-  box.innerHTML = ""; jump.innerHTML = "";
-
-  ORDER.forEach(g=>{
-    const sec = document.createElement("section");
-    sec.className = "group";
-    sec.innerHTML = `<h2>${esc(g.name)}</h2><div class="grid"></div>`;
-    const grid = sec.querySelector(".grid");
-
-    g.units.forEach(k=>{
-      const u = byK[k]; if(!u) return;
-      const L = LINKS.units[k] || {};
-      const short = k.replace(/^LA_/,"");
-      const card = document.createElement("article");
-      card.className = "unit"; card.id = k;
-      card.style.setProperty("--u1", u.c[0]); card.style.setProperty("--u2", u.c[1]);
-      card.innerHTML = `<div class="uh"><span class="sw"></span><div><b>${esc(u.name)}</b><small>${esc(k)}${u.name!==u.sub?" &middot; "+esc(u.sub):""}</small></div></div>
-        <ol class="flow">${STEPS.map((s,i)=>`${i?`<li class="arr" aria-hidden="true">${ARROW}</li>`:""}<li><a class="step" data-kind="${s.k}" style="--sc:${s.c}" target="_blank" rel="noopener"><i>${s.n}</i><span><b>${s.label}</b><small>${s.note}</small></span></a></li>`).join("")}</ol>
-        <a class="track" target="_blank" rel="noopener">${OUT}Request Tracker</a>`;
-      card.querySelectorAll(".step").forEach(a=>{
-        setLink(a, L[a.dataset.kind]);
-        a.setAttribute("aria-label", `${u.name}: step ${a.querySelector("i").textContent}, ${a.querySelector("b").textContent}`);
-      });
-      const t = card.querySelector(".track");
-      setLink(t, LINKS.tracker);
-      t.setAttribute("aria-label", `${u.name}: Request Tracker`);
-      grid.appendChild(card);
-
-      const j = document.createElement("a");
-      j.href = "#" + k;
-      j.style.setProperty("--u1", u.c[0]); j.style.setProperty("--u2", u.c[1]);
-      j.innerHTML = `<i></i>${esc(short)}`;
-      j.title = u.name;
-      jump.appendChild(j);
+  const shells = document.getElementById("shells"), drawer = document.getElementById("drawer"), hint = document.getElementById("hint");
+  if(!shells.children.length){
+    GROUPS.forEach(g=>{
+      const subs = g.units.map(k=>byK[k]).filter(Boolean);
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "shell"; b.dataset.g = g.k;
+      b.setAttribute("aria-controls", "drawer");
+      b.style.setProperty("--g1", g.c[0]);
+      const line = subs.length > 1 ? subs.map(u=>u.k.replace(/^LA_/,"")).join(" · ") : "Cohort sheet, reports, dashboard";
+      b.innerHTML = `<span class="stop"><span class="sk">${esc(g.k)}</span><svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></span>
+        <span class="sname">${esc(g.name)}</span><span class="ssubs">${esc(line)}</span>
+        <span class="sdots" aria-hidden="true">${subs.map(u=>`<i style="background:linear-gradient(135deg,${u.c[0]} 60%,${u.c[1]} 60%)"></i>`).join("")}</span>`;
+      b.addEventListener("click", ()=>{ OPEN = OPEN === g.k ? null : g.k; draw(); });
+      shells.appendChild(b);
     });
-    box.appendChild(sec);
+  }
+  shells.querySelectorAll(".shell").forEach(b=>b.setAttribute("aria-expanded", String(b.dataset.g === OPEN)));
+  const g = GROUPS.find(x=>x.k === OPEN);
+  drawer.innerHTML = ""; drawer.hidden = !g; hint.hidden = !!g;
+  if(!g) return;
+  drawer.style.setProperty("--g1", g.c[0]);
+  drawer.innerHTML = `<div class="dhead"><div><b>${esc(g.name)}</b><small>${g.units.length > 1 ? "Find your unit below" : "Your cohort sheet, reports and dashboard"}</small></div>
+    <button type="button" class="close">Close</button></div><div class="grid"></div>`;
+  const grid = drawer.querySelector(".grid");
+  g.units.forEach(k=>{ if(byK[k]) grid.appendChild(unitCard(byK[k])); });
+  drawer.querySelector(".close").addEventListener("click", ()=>{
+    const t = shells.querySelector(`[data-g="${OPEN}"]`); OPEN = null; draw(); t && t.focus();
   });
 }
 onLinks(draw);
