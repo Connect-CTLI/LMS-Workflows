@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Connect@CTLI Workflows 2027</title>
+<title>Connect@CTLI Unit Links 2027</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -11,255 +11,178 @@
 /* Century Gothic where it is installed (WCED computers), otherwise the matching free Gothic face in /fonts */
 @font-face{font-family:"URW Gothic";src:local("URW Gothic"),local("URWGothic-Book"),url("fonts/URWGothic-Book.woff2") format("woff2"),url("URWGothic-Book.woff2") format("woff2");font-weight:400 500;font-display:swap}
 @font-face{font-family:"URW Gothic";src:local("URW Gothic Demi"),local("URWGothic-Demi"),url("fonts/URWGothic-Demi.woff2") format("woff2"),url("URWGothic-Demi.woff2") format("woff2");font-weight:600 800;font-display:swap}
-</style>
-<style>
-/* Layout: department portal. Fixed side menu on desktop (top bar on phones), quiet light ground, compact panels and tables */
+
 :root{
-  --navy:#001489; --navy-2:#0a1f6e; --gold:#FFC600; --teal:#00A1A3; --olive:#8FAD15; --slate:#5B7F95;
-  --bg:#f4f6f9; --panel:#ffffff; --ink:#14203a; --soft:#5a6a80; --faint:#8a97a8; --line:#e2e7ee; --hover:#f0f4fa;
-  --side:#ffffff; --nav-on:#eef1fb; --link:#001489;
+  --navy:#001489; --deep:#000b4d; --gold:#FFC600; --teal:#00A1A3; --olive:#8FAD15;
+  --bg:#f4f6f9; --panel:#ffffff; --ink:#14203a; --soft:#5a6a80; --faint:#8a97a8; --line:#e2e7ee; --hover:#f0f4fa; --link:#001489;
   --font:'Century Gothic','Gotham','URW Gothic','Avenir Next',sans-serif;
-  --cond:'Century Gothic','Gotham','URW Gothic','Avenir Next',sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --navy:#6f86ff; --bg:#0d1322; --panel:#141c2f; --ink:#e6ebf5; --soft:#a3b0c4; --faint:#7d8aa0; --line:#26304a; --hover:#1a2440;
-  --side:#111829; --nav-on:#1c2747; --link:#9fb0ff; color-scheme:dark}}
+  --navy:#8fa0ff; --bg:#0d1322; --panel:#141c2f; --ink:#e6ebf5; --soft:#a3b0c4; --faint:#7d8aa0; --line:#26304a; --hover:#1a2440; --link:#a9b7ff; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --navy:#6f86ff; --bg:#0d1322; --panel:#141c2f; --ink:#e6ebf5; --soft:#a3b0c4; --faint:#7d8aa0; --line:#26304a; --hover:#1a2440;
-  --side:#111829; --nav-on:#1c2747; --link:#9fb0ff; color-scheme:dark}
+  --navy:#8fa0ff; --bg:#0d1322; --panel:#141c2f; --ink:#e6ebf5; --soft:#a3b0c4; --faint:#7d8aa0; --line:#26304a; --hover:#1a2440; --link:#a9b7ff; color-scheme:dark}
+
 *{box-sizing:border-box}
-html,body{min-height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
-a{color:inherit}
-h1,h2{margin:0;font-weight:600;letter-spacing:-.005em;text-wrap:balance}
-:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+a{color:var(--link)}
 
-.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:calc(100vh - 3px)}
-.side{background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:3px;height:calc(100vh - 3px);
-  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:18px;padding-block:20px 18px}
-.topline{position:sticky;top:0;z-index:5;height:3px;background:linear-gradient(90deg,#FFC600 0 34%,#8FAD15 34% 67%,#00A1A3 67% 100%)}
-.logo{width:150px;max-width:100%;height:auto;display:block}
-.appname{margin:14px 0 22px;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.appname b{display:block;font-size:17px;font-weight:600;line-height:1.25;letter-spacing:-.01em}
-.appname small{display:block;font-size:11.5px;color:var(--soft)}
-.navlabel{font-family:var(--cond);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:0 0 6px 10px}
-.nav{display:flex;flex-direction:column;gap:2px}
-.nav a{display:flex;align-items:center;gap:10px;text-decoration:none;padding:8px 10px;border-radius:7px;font-size:13px;color:var(--soft);font-weight:500}
-.nav a:hover{background:var(--hover);color:var(--ink)}
-.nav a[aria-current="page"]{background:var(--nav-on);color:var(--ink);font-weight:600}
-.nav .k{flex:none;width:20px;height:20px;border-radius:5px;display:grid;place-items:center;font-size:11px;font-weight:600;border:1.5px solid var(--sc,var(--line));color:var(--ink)}
-.nav a[aria-current="page"] .k{background:var(--sc,var(--navy));border-color:var(--sc,var(--navy));color:#0b1530}
-.nav .home .k{--sc:var(--navy)}
-.nav a.home[aria-current="page"] .k{color:#fff}
-.ls{display:block;margin-top:8px;font-size:11px;line-height:1.35;color:var(--faint)}
-.ls.bad{color:#B3261E;font-weight:500}
-.sidefoot{margin-top:auto;font-size:11px;color:var(--faint);line-height:1.4}
+/* Top: white band with the logo, then the WCED stripe */
+.top{background:#fff;border-bottom:1px solid #e2e7ee}
+.top .in{max-width:1180px;margin:0 auto;padding:14px max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{width:170px;height:auto;display:block}
+.top .tag{font-size:12.5px;color:#5a6a80;text-align:right}
+.stripe{height:5px;background:linear-gradient(90deg,var(--gold) 0 33.3%,var(--olive) 33.3% 66.6%,var(--teal) 66.6%)}
 
-.content{min-width:0;padding-block:30px 48px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
-.wrap{max-width:900px;display:flex;flex-direction:column;gap:18px}
+.wrap{max-width:1180px;margin:0 auto;padding:28px max(16px,env(safe-area-inset-left,0px)) 48px}
+h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink)}
+.lead{margin:6px 0 0;color:var(--soft);max-width:62ch}
 
-.pagehead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 24px;padding-bottom:18px;border-bottom:1px solid var(--line)}
-.crumb{font-family:var(--cond);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);display:flex;align-items:center;gap:8px}
-.crumb i{width:8px;height:8px;border-radius:2px;background:var(--sc,var(--navy))}
-.pagehead h1{font-size:24px;margin-top:4px}
-.pagehead p{margin:4px 0 0;color:var(--soft);max-width:58ch}
-.meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:12px;color:var(--soft)}
-.meta b{color:var(--ink);font-weight:600}
-.btns{display:flex;flex-wrap:wrap;gap:8px}
-.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:13px;font-weight:500;padding:8px 14px;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);transition:background .15s,border-color .15s}
-.btn:hover{border-color:var(--faint);background:var(--hover)}
-.btn.primary{background:#001489;border-color:#001489;color:#fff}
-.btn.primary:hover{background:#0a1f6e}
-.btn svg{width:13px;height:13px}
-.off{opacity:.45;pointer-events:none}
+/* The three-step reminder under the title */
+.how{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:18px 0 6px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:13.5px}
+.how b{font-weight:600}
+.how .pill{display:inline-flex;align-items:center;gap:7px;padding:4px 11px 4px 4px;border-radius:999px;background:color-mix(in srgb,var(--pc) 14%,var(--panel))}
+.how .pill i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--pc);color:#0b1530;font-style:normal;font-weight:600;font-size:12px}
+.how .arr{color:var(--faint)}
+.how .plus{margin-left:auto;color:var(--soft)}
 
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.ph{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
-.ph h2{font-size:13.5px}
-.ph span{font-size:12px;color:var(--faint)}
+/* Jump to a unit */
+.jump{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 8px}
+.jump a{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-size:13px;font-weight:600;color:var(--ink);padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel)}
+.jump a:hover{border-color:var(--faint);background:var(--hover)}
+.jump a i{width:10px;height:10px;border-radius:3px;background:linear-gradient(135deg,var(--u1) 60%,var(--u2) 60%)}
 
-/* stage list on home */
-.stagelist a{display:grid;grid-template-columns:28px minmax(0,1fr) auto 14px;gap:14px;align-items:center;padding:13px 16px;text-decoration:none;border-top:1px solid var(--line)}
-.stagelist a:first-child{border-top:0}
-.stagelist a:hover{background:var(--hover)}
-.stagelist .k{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font-weight:600;font-size:13px;background:var(--sc);color:#0b1530}
-.stagelist b{display:block;font-weight:600;font-size:13.5px}
-.stagelist small{display:block;color:var(--soft);font-size:12px}
-.stagelist .when{font-size:12px;color:var(--soft);white-space:nowrap}
-.stagelist .chev{color:var(--faint)}
+/* Unit groups and cards */
+.group{margin-top:26px}
+.group h2{margin:0 0 10px;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,520px),1fr));gap:14px}
+.unit{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--u1);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
+.unit:target{box-shadow:0 0 0 2px var(--u1)}
+.uh{display:flex;align-items:flex-start;gap:12px}
+.uh .sw{flex:none;margin-top:4px;width:14px;height:14px;border-radius:4px;background:linear-gradient(135deg,var(--u1) 60%,var(--u2) 60%)}
+.uh b{display:block;font-size:16px;font-weight:600;line-height:1.3}
+.uh small{display:block;font-size:12.5px;color:var(--faint)}
 
-/* steps */
-.steps{list-style:none;margin:0;padding:0}
-.steps li{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
-.steps li:first-child{border-top:0}
-.steps .n{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11.5px;font-weight:600;border:1.5px solid var(--sc);color:var(--ink)}
-.steps b{display:block;font-weight:600;font-size:13.5px}
-.steps small{display:block;color:var(--soft);font-size:12.5px}
-.tags{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end}
-.tag{font-family:var(--cond);font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;background:var(--hover);color:var(--soft);border:1px solid var(--line);white-space:nowrap}
-.tag.mail{background:transparent;border-color:var(--teal);color:var(--ink);display:inline-flex;align-items:center;gap:4px}
-.tag.mail svg{width:11px;height:11px}
-.legend{padding:10px 16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint);display:flex;align-items:center;gap:6px}
+/* Cohort sheet > Reports > Dashboard */
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:6px}
+.flow .arr{display:grid;place-items:center;color:var(--faint)}
+.flow .arr svg{width:16px;height:16px}
+.step{display:flex;align-items:center;gap:10px;height:100%;text-decoration:none;color:var(--ink);padding:11px 12px;border-radius:9px;border:1px solid color-mix(in srgb,var(--sc) 45%,var(--line));background:color-mix(in srgb,var(--sc) 12%,var(--panel));transition:background .15s,border-color .15s}
+.step:hover{background:color-mix(in srgb,var(--sc) 24%,var(--panel));border-color:var(--sc)}
+.step:focus-visible,.track:focus-visible,.jump a:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.step i{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--sc);color:#0b1530;font-style:normal;font-weight:600;font-size:13px}
+.step b{display:block;font-size:14px;font-weight:600;line-height:1.2}
+.step small{display:block;font-size:11.5px;color:var(--soft);line-height:1.3}
+.step.off,.track.off{opacity:.45;cursor:not-allowed;pointer-events:none}
+.step.off small::after{content:" (link not added yet)"}
 
-/* unit table */
-.tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse}
-thead th{font-family:var(--cond);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:500;text-align:left;padding:9px 16px;background:var(--hover);border-bottom:1px solid var(--line);white-space:nowrap}
-tbody th,tbody td{padding:9px 16px;border-bottom:1px solid var(--line);text-align:left;font-weight:400;vertical-align:middle}
-tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
-tbody tr:hover{background:var(--hover)}
-tbody th{min-width:200px}
-.uc{display:flex;align-items:center;gap:11px}
-.sw{flex:none;width:14px;height:14px;border-radius:3px}
-.un b{display:block;font-weight:500;font-size:13px}
-.un small{display:block;font-size:11.5px;color:var(--faint)}
-td{width:120px}
-.tl{font-size:12.5px;font-weight:500;color:var(--link);text-decoration:none;white-space:nowrap}
-.tl::after{content:" \2197";font-size:11px}
-.tl:hover{text-decoration:underline}
-.tl.off{color:var(--faint);opacity:1}
-.tl.off::after{content:""}
+.track{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:13px;font-weight:600;color:var(--link);padding:7px 12px;border-radius:8px;border:1px dashed var(--line)}
+.track:hover{background:var(--hover);border-style:solid}
+.track svg{width:14px;height:14px}
 
-.pager{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px}
-.pager a{text-decoration:none;color:var(--soft)}
-.pager a:hover{color:var(--ink)}
+.status{display:none;margin:16px 0 0;padding:10px 14px;border-radius:8px;background:#FDECEA;color:#8a1c14;font-size:13px}
+.status.bad{display:block}
+.foot{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
-
-@media (max-width:820px){
-  .shell{grid-template-columns:minmax(0,1fr)}
-  .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding-block:14px 10px;padding-right:max(16px,env(safe-area-inset-right,0px));padding-left:max(16px,env(safe-area-inset-left,0px))}
-  .appname{margin:10px 0 10px;padding-bottom:0;border:0}
-  .logo{width:120px}
-  .navlabel,.sidefoot{display:none}
-  .nav{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px}
-  .nav a{white-space:nowrap;padding:7px 10px}
-  .content{padding-block:22px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-}
-@media (max-width:560px){
-  .steps li{grid-template-columns:24px minmax(0,1fr);row-gap:6px}
-  .steps .tags{grid-column:2;justify-content:flex-start}
-  .stagelist a{grid-template-columns:28px minmax(0,1fr) 14px}
-  .stagelist .when{display:none}
-  tbody th{min-width:150px}
-  thead th,tbody th,tbody td{padding-left:12px;padding-right:12px}
-  td{width:auto}
+@media (max-width:640px){
+  h1{font-size:22px}
+  .top .tag{display:none}
+  .logo{width:140px}
+  .flow{grid-template-columns:1fr}
+  .flow .arr{transform:rotate(90deg);height:14px}
+  .how .plus{margin-left:0;width:100%}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
-
-/* ---- v3: full-width layout, unit cards with buttons, stage side panel ---- */
-.wrap{max-width:1240px;width:100%}
-.qa{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.qa a{display:flex;flex-direction:column;gap:2px;text-decoration:none;padding:14px 16px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);transition:border-color .15s,background .15s}
-.qa a:hover{border-color:var(--faint);background:var(--hover)}
-.qa a b{font-weight:600;font-size:13.5px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.qa a b svg{width:13px;height:13px;flex:none;color:var(--faint)}
-.qa a small{color:var(--soft);font-size:12px}
-.qa a.primary{background:#001489;border-color:#001489;color:#fff}
-.qa a.primary small,.qa a.primary b svg{color:rgba(255,255,255,.75)}
-.qa a.primary:hover{background:#0a1f6e}
-.sechead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:6px}
-.sechead h2{font-size:14px}
-.sechead span{font-size:12px;color:var(--faint)}
-.ugrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
-.ucard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
-.uhead{display:flex;align-items:flex-start;gap:11px;min-width:0}
-.uhead .sw{margin-top:3px;width:12px;height:12px;border-radius:3px;background:linear-gradient(135deg,var(--u1) 60%,var(--u2) 60%)}
-.ucard .un{min-width:0}
-.ucard .un b{display:block;font-weight:600;font-size:13.5px;line-height:1.3}
-.ucard .un small{display:block;font-size:11.5px;color:var(--faint)}
-.ubtns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:auto}
-.ubtn{display:block;text-align:center;text-decoration:none;font-size:12.5px;font-weight:500;padding:7px 6px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:border-color .15s,background .15s}
-.ubtn:hover{border-color:var(--u1);background:var(--panel)}
-.ubtn.off{opacity:.4}
-.split{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
-.aside{display:flex;flex-direction:column;gap:14px}
-.aside .box{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
-.aside .k{font-family:var(--cond);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
-.aside .v{font-size:13.5px;font-weight:500}
-.aside .btn{justify-content:space-between;width:100%}
-.aside .next{display:flex;justify-content:space-between;align-items:center;gap:8px;text-decoration:none;padding:12px 16px;font-weight:600;font-size:13px;color:var(--ink)}
-.aside .next:hover{background:var(--hover)}
-.aside .next small{display:block;font-weight:400;color:var(--faint);font-size:11.5px}
-@media (max-width:1100px){.qa{grid-template-columns:repeat(2,minmax(0,1fr))}.split{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:560px){.qa{grid-template-columns:1fr}.ugrid{grid-template-columns:1fr}}
-
-/* ---- v3.1: more colour, stage graphic ---- */
-.pagehead{position:relative}
-.pagehead .btns{align-self:center}
-.flowg{display:block;width:300px;max-width:100%;height:auto}
-.flowg text{font-family:var(--font);font-weight:600}
-.flowg .lbl{font-weight:500;fill:var(--soft)}
-.qa a{border-top:3px solid var(--qc,var(--line))}
-.qa a.primary{border-top-color:#FFC600}
-.ucard{border-top:3px solid var(--u1)}
-.ubtn[data-kind="cohort"]{background:color-mix(in srgb,var(--u1) 12%,var(--panel));border-color:color-mix(in srgb,var(--u1) 35%,var(--line))}
-.ubtn:hover{background:color-mix(in srgb,var(--u1) 20%,var(--panel))}
-.steps .n{background:color-mix(in srgb,var(--sc) 22%,var(--panel))}
-.panel[style*="--sc"] .ph{border-top:3px solid var(--sc)}
-.nav a[aria-current="page"]{background:color-mix(in srgb,var(--sc,#001489) 14%,var(--side))}
-.aside .next{background:color-mix(in srgb,var(--teal) 8%,var(--panel))}
-@media (max-width:760px){.pagehead .btns{display:none}}
-.flowlink{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;border-radius:10px;padding:4px}
-.flowlink:hover{background:var(--hover)}
-.flowlink span{font-size:12px;font-weight:600;color:var(--link)}
-.nav .k svg{display:block}
-
-/* ---- v4: four main unit tiles that open to their sub-units ---- */
-.ggrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.gtile{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:4px;padding:16px 16px 14px;border-radius:10px;
-  background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--g1);color:var(--ink);font-family:var(--font);
-  transition:background .15s,border-color .15s,box-shadow .15s}
-.gtile:hover{background:color-mix(in srgb,var(--g1) 6%,var(--panel));border-color:color-mix(in srgb,var(--g1) 35%,var(--line));border-top-color:var(--g1)}
-.gtile:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
-.gtile[aria-expanded="true"]{background:color-mix(in srgb,var(--g1) 10%,var(--panel));border-color:color-mix(in srgb,var(--g1) 45%,var(--line));border-top-color:var(--g1);box-shadow:0 6px 18px -12px var(--g1)}
-.gtop{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.gk{font-size:22px;font-weight:600;letter-spacing:-.01em;line-height:1.1}
-.gchev{width:16px;height:16px;color:var(--faint);transition:transform .2s}
-.gtile[aria-expanded="true"] .gchev{transform:rotate(180deg);color:var(--ink)}
-.gname{font-size:13px;font-weight:500;line-height:1.3}
-.gsubs{font-size:11.5px;color:var(--faint);line-height:1.35}
-.gdots{display:flex;gap:4px;margin-top:8px}
-.gdots i{width:10px;height:10px;border-radius:3px}
-.gdrawer{border:1px solid color-mix(in srgb,var(--g1) 30%,var(--line));border-radius:10px;background:color-mix(in srgb,var(--g1) 4%,var(--panel));padding:14px;display:flex;flex-direction:column;gap:12px;animation:gin .18s ease-out}
-.gdrawer[hidden]{display:none}
-.gdhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 2px}
-.gdhead b{display:block;font-size:14px;font-weight:600}
-.gdhead small{display:block;font-size:12px;color:var(--soft)}
-.gclose{font:inherit;font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
-.gclose:hover{background:var(--hover);border-color:var(--faint)}
-@keyframes gin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-@media (max-width:900px){.ggrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:380px){.ggrid{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){.gdrawer{animation:none}.gchev{transition:none}}
 </style>
 </head>
 <body>
-<div class="topline"></div>
-<div class="shell">
-  <aside class="side">
-    <a href="index.html"><img class="logo" src="logo.png" alt="Western Cape Education Department"></a>
-    <div class="appname"><small>Cape Teaching and Leadership Institute</small><span id="linkstatus" class="ls" role="status"></span></div>
-    <div class="navlabel">Workflow</div>
-    <nav class="nav" aria-label="Pages"><a class="home" href="index.html" aria-current="page"><span class="k">&#8962;</span>Overview</a><a href="sop.html" style="--sc:var(--gold)"><span class="k"><svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 1.8h5.2L12 4.6v9.6H4z"/><path d="M6 7.5h4M6 10h4"/></svg></span>Standard Operating Procedure</a></nav>
-    <div class="sidefoot">Western Cape Education Department</div>
-  </aside>
-  <main class="content"><div class="wrap">
-    <header class="pagehead" style="--sc:var(--navy)">
-      <div><div class="crumb"><i></i>CTLI Process Team &middot; Overview</div><h1>Connect@CTLI Workflows 2027</h1><p>Request a PLO shell, track it, and open your unit's cohort sheet, dashboard and reports. The <a href="sop.html" style="color:var(--link);font-weight:600">Standard Operating Procedure</a> explains every step.</p></div>
-      <div class="btns"><a href="sop.html" class="flowlink" aria-label="Open the Standard Operating Procedure"><svg class="flowg" viewBox="0 0 300 110" role="img" aria-label="Three workflow stages"><circle cx="50" cy="48" r="24" fill="#FFC600" opacity=".12"/><circle cx="150" cy="48" r="33" fill="#00A1A3" opacity=".09"/><circle cx="250" cy="48" r="44" fill="#8FAD15" opacity=".10"/><path d="M50 48 H250" stroke="var(--line)" stroke-width="2.5" stroke-dasharray="2 6" stroke-linecap="round"/><circle cx="50" cy="48" r="24" fill="#FFC600" opacity=".18"/><circle cx="50" cy="48" r="16" fill="#FFC600"/><text x="50" y="53" text-anchor="middle" font-size="14" fill="#0b1530">1</text><text class="lbl" x="50" y="92" text-anchor="middle" font-size="11.5">Request</text><circle cx="150" cy="48" r="24" fill="#00A1A3" opacity=".18"/><circle cx="150" cy="48" r="16" fill="#00A1A3"/><text x="150" y="53" text-anchor="middle" font-size="14" fill="#0b1530">2</text><text class="lbl" x="150" y="92" text-anchor="middle" font-size="11.5">Load</text><circle cx="250" cy="48" r="24" fill="#8FAD15" opacity=".18"/><circle cx="250" cy="48" r="16" fill="#8FAD15"/><text x="250" y="53" text-anchor="middle" font-size="14" fill="#0b1530">3</text><text class="lbl" x="250" y="92" text-anchor="middle" font-size="11.5">Report</text></svg><span>View the SOP &rarr;</span></a></div>
-    </header>
-    <section class="qa">
-      <a data-link="request" target="_blank" rel="noopener" style="--qc:" class="primary"><b>Request a PLO shell<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></b><small>Start here (SOP step 1.1)</small></a>
-      <a data-link="tracker" target="_blank" rel="noopener" style="--qc:#FFC600"><b>Request tracker<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></b><small>Where each PLO is</small></a>
-      <a data-link="master" target="_blank" rel="noopener" style="--qc:#00A1A3"><b>Master Dashboard<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></b><small>All units together</small></a>
-      <a data-link="reports" target="_blank" rel="noopener" style="--qc:#8FAD15"><b>All reports<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></b><small>2027 completion reports</small></a>
-    </section>
-    <div class="sechead" id="units"><h2>Units</h2><span>Choose a unit to open its sub-units, cohort sheets, dashboards and reports</span></div>
-    <section class="ggrid" id="gg" aria-label="Units"></section>
-    <section class="gdrawer" id="gd" aria-live="polite" hidden></section>
-  </div></main>
-</div>
+<header class="top">
+  <div class="in">
+    <img class="logo" src="logo.png" alt="Western Cape Government: Education">
+    <div class="tag">Cape Teaching and Leadership Institute<br>Connect@CTLI</div>
+  </div>
+  <div class="stripe"></div>
+</header>
+
+<main class="wrap">
+  <h1>Your unit links</h1>
+  <p class="lead">Find your unit below. Everything you need is in three steps, in this order, with the Request Tracker underneath.</p>
+
+  <div class="how" aria-label="How it works">
+    <span class="pill" style="--pc:var(--gold)"><i>1</i><b>Cohort sheet</b></span><span class="arr">&rarr;</span>
+    <span class="pill" style="--pc:var(--teal)"><i>2</i><b>Reports</b></span><span class="arr">&rarr;</span>
+    <span class="pill" style="--pc:var(--olive)"><i>3</i><b>Dashboard</b></span>
+    <span class="plus">Check where your PLO is on the Request Tracker.</span>
+  </div>
+
+  <p id="linkstatus" class="status" role="status"></p>
+  <nav class="jump" id="jump" aria-label="Jump to your unit"></nav>
+  <div id="units"></div>
+
+  <footer class="foot">
+    <span>Western Cape Education Department &middot; CTLI Process Team</span>
+    <span>Questions? Email <a href="mailto:connect.ctli@wced.info">connect.ctli@wced.info</a></span>
+  </footer>
+</main>
+
 <script src="links.js"></script>
-<script>onLinks(()=>renderUnitGroups("gg","gd"));</script>
+<script>
+/* Units in the order they appear on the page */
+const ORDER = [
+  {name:"Leadership Academy",           units:["LA_SMLDP","LA_SMLDC"]},
+  {name:"Teacher Practice Improvement", units:["FP","IP","SP","IE","NTI","FET"]},
+  {name:"Professional Development",     units:["PD"]},
+  {name:"EDULIS",                       units:["EDULIS"]}
+];
+const STEPS = [
+  {k:"cohort",    n:1, label:"Cohort sheet", note:"Add your participants",  c:"var(--gold)"},
+  {k:"reports",   n:2, label:"Reports",      note:"Completion reports",     c:"var(--teal)"},
+  {k:"dashboard", n:3, label:"Dashboard",    note:"Your unit's numbers",    c:"var(--olive)"}
+];
+const ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
+const OUT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg>';
+
+function draw(){
+  const byK = Object.fromEntries(UNITS.map(u=>[u.k,u]));
+  const box = document.getElementById("units"), jump = document.getElementById("jump");
+  box.innerHTML = ""; jump.innerHTML = "";
+
+  ORDER.forEach(g=>{
+    const sec = document.createElement("section");
+    sec.className = "group";
+    sec.innerHTML = `<h2>${esc(g.name)}</h2><div class="grid"></div>`;
+    const grid = sec.querySelector(".grid");
+
+    g.units.forEach(k=>{
+      const u = byK[k]; if(!u) return;
+      const L = LINKS.units[k] || {};
+      const short = k.replace(/^LA_/,"");
+      const card = document.createElement("article");
+      card.className = "unit"; card.id = k;
+      card.style.setProperty("--u1", u.c[0]); card.style.setProperty("--u2", u.c[1]);
+      card.innerHTML = `<div class="uh"><span class="sw"></span><div><b>${esc(u.name)}</b><small>${esc(k)}${u.name!==u.sub?" &middot; "+esc(u.sub):""}</small></div></div>
+        <ol class="flow">${STEPS.map((s,i)=>`${i?`<li class="arr" aria-hidden="true">${ARROW}</li>`:""}<li><a class="step" data-kind="${s.k}" style="--sc:${s.c}" target="_blank" rel="noopener"><i>${s.n}</i><span><b>${s.label}</b><small>${s.note}</small></span></a></li>`).join("")}</ol>
+        <a class="track" target="_blank" rel="noopener">${OUT}Request Tracker</a>`;
+      card.querySelectorAll(".step").forEach(a=>{
+        setLink(a, L[a.dataset.kind]);
+        a.setAttribute("aria-label", `${u.name}: step ${a.querySelector("i").textContent}, ${a.querySelector("b").textContent}`);
+      });
+      const t = card.querySelector(".track");
+      setLink(t, LINKS.tracker);
+      t.setAttribute("aria-label", `${u.name}: Request Tracker`);
+      grid.appendChild(card);
+
+      const j = document.createElement("a");
+      j.href = "#" + k;
+      j.style.setProperty("--u1", u.c[0]); j.style.setProperty("--u2", u.c[1]);
+      j.innerHTML = `<i></i>${esc(short)}`;
+      j.title = u.name;
+      jump.appendChild(j);
+    });
+    box.appendChild(sec);
+  });
+}
+onLinks(draw);
+</script>
 </body>
 </html>
