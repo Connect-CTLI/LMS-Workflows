@@ -39,6 +39,19 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
 .lead{margin:6px 0 0;color:var(--soft);max-width:62ch}
 
 /* The three-step reminder under the title */
+/* Request form and Master Dashboard, top right */
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.head .txt{flex:1 1 420px;min-width:0}
+.top-links{display:flex;gap:10px;flex-wrap:wrap}
+.tbtn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-size:14px;font-weight:600;padding:11px 16px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);transition:background .15s,border-color .15s}
+.tbtn small{display:block;font-weight:400;font-size:12px;color:var(--soft)}
+.tbtn svg{width:16px;height:16px;flex:none}
+.tbtn:hover{background:var(--hover);border-color:var(--faint)}
+.tbtn.primary{background:#001489;border-color:#001489;color:#fff}
+.tbtn.primary small{color:rgba(255,255,255,.78)}
+.tbtn.primary:hover{background:#0a1f6e}
+.tbtn:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.tbtn.off{opacity:.45;pointer-events:none}
 .how{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:18px 0 6px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:13.5px}
 .how b{font-weight:600}
 .how .pill{display:inline-flex;align-items:center;gap:7px;padding:4px 11px 4px 4px;border-radius:999px;background:color-mix(in srgb,var(--pc) 14%,var(--panel))}
@@ -124,8 +137,16 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
 </header>
 
 <main class="wrap">
-  <h1>CTLI LMS Operations Workflow</h1>
-  <p class="lead">Choose your unit. Everything you need is in three steps, in this order, with the Request Tracker underneath.</p>
+  <div class="head">
+    <div class="txt">
+      <h1>CTLI LMS Operations Workflow</h1>
+      <p class="lead">Request a PLO shell, then choose your unit. Everything you need is in three steps, in this order, with the Request Tracker underneath.</p>
+    </div>
+    <div class="top-links">
+      <a class="tbtn primary" data-link="request" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg><span>Request a PLO shell<small>Shell Activation Request form</small></span></a>
+      <a class="tbtn" data-link="master" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg><span>CTLI Master Dashboard<small>All units together</small></span></a>
+    </div>
+  </div>
 
   <div class="how" aria-label="How it works">
     <span class="pill" style="--pc:var(--gold)"><i>1</i><b>Cohort sheet</b></span><span class="arr">&rarr;</span>
