@@ -15,15 +15,15 @@ const SOP = {
   email: "connect.ctli@wced.info",
   control: [
     ["Document", "SOP: LMS Operations Workflow 2027"],
-    ["Version", "1.3"],
-    ["Date issued", "26 October 2026"],
+    ["Version", "1.4"],
+    ["Date issued", "5 November 2026"],
     ["Applies from", "January 2027"],
     ["Owner", "CTLI Process Team (LMS Administration)"],
     ["Next review", "October 2027, or sooner if the workflow changes"]
   ],
 
   purpose: [
-    "This SOP sets out how a PLO on Connect@CTLI (Moodle) moves from a training coordinator's request to a finished completion report. It makes sure every PLO is set up the same way, checked before teachers see it, and reported on correctly.",
+    "This SOP sets out how a PLO on Connect@CTLI (Moodle) moves from a programme coordinator's request to a finished completion report. It makes sure every PLO is set up the same way, checked before teachers see it, and reported on correctly.",
     "Follow it for every PLO run in 2027. If a step cannot be followed, speak to the LMS Admin before you go ahead."
   ],
 
@@ -42,10 +42,10 @@ const SOP = {
   ],
 
   roles: [
-    ["Training Coordinator (TC)", "Requests the PLO shell, tests it with PDD, owns the unit cohort sheet, checks enrolments and receives the completion report."],
+    ["Programme Coordinator (PC)", "Requests the PLO shell, tests it with PDD, owns the unit cohort sheet, checks enrolments and receives the completion report."],
     ["Unit intern", "Captures and checks participant details in the cohort sheet. May fix enrolments on Moodle, but always tells the LMS Admin."],
     ["LMS Admin", "Assigns the Moodle short name and cohort code, sets up, opens and closes the PLO, uploads participants, builds reports and updates the dashboards. Shared inbox: connect.ctli@wced.info"],
-    ["PDD", "Runs the quality check with the TC before the PLO is opened to participants."],
+    ["PDD", "Runs the quality check with the PC before the PLO is opened to participants."],
     ["Unit Head", "Receives the completion report by email (listed on the Unit Heads tab of the request sheet) and uses the unit dashboard for planning."]
   ],
 
@@ -56,10 +56,10 @@ const SOP = {
     ["Official start date", "The start date as advertised to teachers."],
     ["Official end date", "The end date as advertised to teachers."],
     ["Closing date", "The day the PLO closes for reporting. Completion reports are only built after this date."],
-    ["Moodle short name and cohort code", "Moodle identifiers for the PLO run. The LMS Admin assigns both once a request comes in, so the TC does not need them."],
+    ["Moodle short name and cohort code", "Moodle identifiers for the PLO run. The LMS Admin assigns both once a request comes in, so the PC does not need them."],
     ["Course, district and school groups", "Every participant is placed in all three groups when uploaded. This makes reporting by course, district and school possible."],
-    ["Request Tracker", "Shows each request, its step out of 7 and what happens next. TCs check it instead of emailing for updates. It also flags dates in the wrong order and PLOs that open within 2 weeks."],
-    ["Status", "Set by the LMS Admin on the request sheet: Requested, Activated (hidden), QC passed, Participants loaded, PLO open, PLO closed, Report sent. Each change moves the Tracker on. Status changes do not send emails: the LMS Admin emails the TC by hand."],
+    ["Request Tracker", "Shows each request, its step out of 7 and what happens next. PCs check it instead of emailing for updates. It also flags dates in the wrong order and PLOs that open within 2 weeks."],
+    ["Status", "Set by the LMS Admin on the request sheet: Requested, Activated (hidden), QC passed, Participants loaded, PLO open, PLO closed, Report sent. Each change moves the Tracker on. Status changes do not send emails: the LMS Admin emails the PC by hand."],
     ["Cohort sheet", "Each unit's own Google Sheet of participants. All unit sheets feed the Master participant data."],
     ["CTLI Master Dashboard", "Holds completions for all units. Each unit dashboard pulls only its own unit's numbers from it."]
   ],
@@ -70,20 +70,20 @@ const SOP = {
       when: "As early as possible (see What you can request)",
       intro: "The PLO is set up on Connect@CTLI but stays hidden until it passes the quality check.",
       steps: [
-        { id: "1.1", title: "Submit the PLO shell request", who: ["TC"], email: true, status: "Requested",
-          detail: "Complete the Shell Activation Request form as early as possible, using the lead time for your request type (see What you can request). Give the TC's name and email address, the delivery unit, the request type, the full PLO name as listed in Annexure A, the existing PLO (for a copy or a new cohort), the expected number of participants and the four dates: opening, official start, official end and closing. For a once-off event such as a webinar, use the same date for start and end. You do not need the Moodle short name or cohort code.",
+        { id: "1.1", title: "Submit the PLO shell request", who: ["PC"], email: true, status: "Requested",
+          detail: "Complete the Shell Activation Request form as early as possible, using the lead time for your request type (see What you can request). Give the PC's name and email address, the delivery unit, the request type, the full PLO name as listed in Annexure A, the existing PLO (for a copy or a new cohort), the expected number of participants and the four dates: opening, official start, official end and closing. For a once-off event such as a webinar, use the same date for start and end. You do not need the Moodle short name or cohort code.",
           output: "The LMS Admin inbox gets an alert and you get an acknowledgement receipt by email from the LMS Admin. The request shows on the Request Tracker.",
           links: [] },
         { id: "1.2", title: "Set up the PLO shell and keep it hidden", who: ["LMS Admin"], email: false, status: "Activated (hidden)",
-          detail: "Assign the Moodle short name and cohort code, set up the PLO shell on Connect@CTLI and keep it hidden from participants. On the request sheet, fill in Course short name (the Moodle short name), Cohort and Moodle link, then set the Status. Email the TC the PLO link, short name and cohort from connect.ctli@wced.info.",
-          output: "The LMS Admin emails the TC the PLO link, short name and cohort.",
+          detail: "Assign the Moodle short name and cohort code, set up the PLO shell on Connect@CTLI and keep it hidden from participants. On the request sheet, fill in Course short name (the Moodle short name), Cohort and Moodle link, then set the Status. Email the PC the PLO link, short name and cohort from connect.ctli@wced.info.",
+          output: "The LMS Admin emails the PC the PLO link, short name and cohort.",
           links: [] },
-        { id: "1.3", title: "Run the quality check", who: ["PDD", "TC"], email: false, status: "",
-          detail: "PDD and the TC test the PLO together: content, activities, completion settings and dates. Fix anything that does not work before moving on.",
+        { id: "1.3", title: "Run the quality check", who: ["PDD", "PC"], email: false, status: "",
+          detail: "PDD and the PC test the PLO together: content, activities, completion settings and dates. Fix anything that does not work before moving on.",
           output: "A PLO that is ready for participants.", links: [] },
-        { id: "1.4", title: "Confirm the quality check", who: ["TC", "LMS Admin"], email: false, status: "QC passed",
-          detail: "The TC lets the LMS Admin know that the quality check passed. The LMS Admin sets the Status. The PLO stays hidden until this step is done.",
-          output: "The Tracker shows QC passed. The LMS Admin reminds the TC by email to finish the cohort sheet.", links: [] }
+        { id: "1.4", title: "Confirm the quality check", who: ["PC", "LMS Admin"], email: false, status: "QC passed",
+          detail: "The PC lets the LMS Admin know that the quality check passed. The LMS Admin sets the Status. The PLO stays hidden until this step is done.",
+          output: "The Tracker shows QC passed. The LMS Admin reminds the PC by email to finish the cohort sheet.", links: [] }
       ]
     },
     {
@@ -91,18 +91,18 @@ const SOP = {
       when: "1 to 2 weeks before the opening date",
       intro: "Participants are loaded from the unit cohort sheet, checked, and the PLO opens on the opening date.",
       steps: [
-        { id: "2.1", title: "Complete the cohort sheet", who: ["TC", "Intern"], email: false, status: "",
-          detail: "Capture every participant in your unit's cohort sheet and check names, email addresses, district and school. PERSAL and EMIS numbers are not needed. Leadership Academy captures LA_SMLDP and LA_SMLDC participants on their own sheets.",
+        { id: "2.1", title: "Complete the cohort sheet", who: ["PC", "Intern"], email: false, status: "",
+          detail: "Capture every participant in your unit's cohort sheet and check names, email addresses, district and school. Straight after the email address, paste each participant's Age, Race, Disability and Gender, in that order. There are no dropdowns: copy and paste the details as they were captured. Age can be an exact age or a range (<35, 35-55, >55); the dashboards show it as a range. These four details are only used for reporting on the dashboards and never go to Moodle. PERSAL and EMIS numbers are not needed. Leadership Academy captures LA_SMLDP and LA_SMLDC participants on their own sheets.",
           output: "A complete, checked cohort sheet.", links: ["unit:cohort"] },
         { id: "2.2", title: "Upload participants", who: ["LMS Admin"], email: false, status: "Participants loaded",
           detail: "Upload participants from the cohort sheet into the course, district and school groups, then set the Status.",
-          output: "The LMS Admin emails the TC the PLO link to check the participant list.", links: [] },
-        { id: "2.3", title: "Check and correct enrolments", who: ["TC", "Intern"], email: false, status: "",
+          output: "The LMS Admin emails the PC the PLO link to check the participant list.", links: [] },
+        { id: "2.3", title: "Check and correct enrolments", who: ["PC", "Intern"], email: false, status: "",
           detail: "Check the enrolments on Connect@CTLI against the cohort sheet. Interns may correct enrolments on Moodle, but must always tell the LMS Admin what was changed.",
           output: "Enrolments match the cohort sheet.", links: [] },
         { id: "2.4", title: "Open the PLO", who: ["LMS Admin"], email: false, status: "PLO open",
           detail: "Make the PLO visible on the opening date given in the request, then set the Status.",
-          output: "Participants can get into the PLO. The LMS Admin lets the TC know by email that the PLO is open.", links: [] }
+          output: "Participants can get into the PLO. The LMS Admin lets the PC know by email that the PLO is open.", links: [] }
       ]
     },
     {
@@ -112,15 +112,15 @@ const SOP = {
       steps: [
         { id: "3.1", title: "Close the PLO", who: ["LMS Admin"], email: false, status: "PLO closed",
           detail: "Close the PLO for reporting on the closing date given in the request, then set the Status.",
-          output: "The Tracker shows the PLO as closed. The LMS Admin lets the TC know by email that the report is being built.", links: [] },
+          output: "The Tracker shows the PLO as closed. The LMS Admin lets the PC know by email that the report is being built.", links: [] },
         { id: "3.2", title: "Build the completion report", who: ["LMS Admin"], email: false, status: "",
           detail: "Build the completion report from the Moodle completion data, using the course, district and school groups.",
           output: "A completion report for the PLO run.", links: [] },
         { id: "3.3", title: "Send and file the report", who: ["LMS Admin"], email: false, status: "Report sent",
-          detail: "Save the report in the unit's report folder. Paste the report link into Report link on the request sheet, then set the Status. Email the report link to the TC and to the Unit Head listed on the Unit Heads tab.",
-          output: "The TC and the Unit Head have the report. The Request Tracker shows the PLO as complete.", links: ["unit:reports"] },
-        { id: "3.4", title: "Update the dashboards", who: ["LMS Admin", "TC"], email: false, status: "",
-          detail: "Paste the Moodle completions once into the CTLI Master Dashboard. The unit dashboard updates from there. The TC checks the unit dashboard.",
+          detail: "Save the report in the unit's report folder. Paste the report link into Report link on the request sheet, then set the Status. Email the report link to the PC and to the Unit Head listed on the Unit Heads tab.",
+          output: "The PC and the Unit Head have the report. The Request Tracker shows the PLO as complete.", links: ["unit:reports"] },
+        { id: "3.4", title: "Update the dashboards", who: ["LMS Admin", "PC"], email: false, status: "",
+          detail: "Paste the Moodle completions once into the CTLI Master Dashboard. The unit dashboard updates from there. The PC checks the unit dashboard.",
           output: "Master and unit dashboards are up to date.", links: ["unit:dashboard"] }
       ]
     }
@@ -143,7 +143,7 @@ const SOP = {
     "No PLO opens to participants before the quality check is confirmed.",
     "Only the LMS Admin changes the Status on the request sheet. Nobody types on the Request Tracker tab: it updates by itself.",
     "Participant details go into the unit cohort sheet, not into emailed lists.",
-    "Any change made on Moodle by a TC or intern is reported to the LMS Admin.",
+    "Any change made on Moodle by a PC or intern is reported to the LMS Admin.",
     "Completion reports are only built after the closing date.",
     "Completions are pasted once, into the CTLI Master Dashboard only. Unit dashboards are never edited by hand.",
     "Unit dashboards show only that unit's numbers. Only the Master Dashboard shows all units.",
