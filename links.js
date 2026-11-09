@@ -12,6 +12,7 @@ const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTP1JAVJV8ip8
 const LINKS = {
   request: "",   // Shell Activation Request form
   tracker: "",   // Request tracker sheet (form responses with Status column)
+  qc:      "https://docs.google.com/spreadsheets/d/1ygusZU9GcbQ_89w-QCY95fCX32zh0bT9ilBfNHjZIZY/edit?usp=sharing",   // CTLI PLO Quality Check 2027 sheet (one tab per PC)
   master:  "",   // CTLI Master Dashboard
   reports: "",   // Drive folder: all 2027 completion reports
   units: {
@@ -51,7 +52,7 @@ function setLink(el, url){
   else { el.removeAttribute("href"); el.classList.add("off"); el.setAttribute("aria-disabled","true"); el.title = "Link not added yet"; }
 }
 
-/* Fill any element with data-link="request|tracker|master|reports" */
+/* Fill any element with data-link="request|tracker|qc|master|reports" */
 function fillTopLinks(){
   document.querySelectorAll("[data-link]").forEach(el=>setLink(el, LINKS[el.dataset.link]));
 }
@@ -99,7 +100,7 @@ function applyLink(code, url){
 
 /* What happened when the site tried to read the Google Sheet. Shown in the side menu. */
 const LINK_STATUS = {ok:false, text:(SHEET_CSV||"").trim() ? "Links: loading from the Google Sheet" : "Links: from links.js (no Google Sheet link set)"};
-const CODE_RE = /^(request|tracker|master|reports|[A-Za-z_]+\.(cohort|dashboard|reports))$/;
+const CODE_RE = /^(request|tracker|qc|master|reports|[A-Za-z_]+\.(cohort|dashboard|reports))$/;
 
 const LINKS_READY = (async ()=>{
   const src = (SHEET_CSV || "").trim();

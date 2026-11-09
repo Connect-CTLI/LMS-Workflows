@@ -104,12 +104,20 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
 .step i{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--sc);color:#0b1530;font-style:normal;font-weight:600;font-size:13px}
 .step b{display:block;font-size:14px;font-weight:600;line-height:1.2}
 .step small{display:block;font-size:11.5px;color:var(--soft);line-height:1.3}
-.step.off,.track.off{opacity:.45;cursor:not-allowed;pointer-events:none}
+.step.off,.track.off,.qc.off{opacity:.45;cursor:not-allowed;pointer-events:none}
 .step.off small::after{content:" (link not added yet)"}
 
 .track{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:13px;font-weight:600;color:var(--link);padding:7px 12px;border-radius:8px;border:1px dashed var(--line)}
 .track:hover{background:var(--hover);border-style:solid}
 .track svg{width:14px;height:14px}
+.tracks{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.qc{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:13px;font-weight:600;color:#000b4d;padding:7px 12px;border-radius:8px;
+  border:1px solid color-mix(in srgb,var(--gold) 70%,var(--line));background:color-mix(in srgb,var(--gold) 22%,var(--panel));transition:background .15s,border-color .15s}
+.qc:hover{background:color-mix(in srgb,var(--gold) 40%,var(--panel));border-color:var(--gold)}
+.qc:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.qc svg{width:14px;height:14px}
+:root[data-theme="dark"] .qc{color:var(--ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .qc{color:var(--ink)}}
 
 .status{display:none;margin:16px 0 0;padding:10px 14px;border-radius:8px;background:#FDECEA;color:#8a1c14;font-size:13px}
 .status.bad{display:block}
@@ -152,7 +160,7 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
     <span class="pill" style="--pc:var(--gold)"><i>1</i><b>Cohort sheet</b></span><span class="arr">&rarr;</span>
     <span class="pill" style="--pc:var(--teal)"><i>2</i><b>Reports</b></span><span class="arr">&rarr;</span>
     <span class="pill" style="--pc:var(--olive)"><i>3</i><b>Dashboard</b></span>
-    <span class="plus">Check where your PLO is on the Request Tracker.</span>
+    <span class="plus">Check where your PLO is on the Request Tracker, and complete the Quality Check before it opens.</span>
   </div>
 
   <p id="linkstatus" class="status" role="status"></p>
@@ -174,9 +182,10 @@ const STEPS = [
   {k:"dashboard", n:3, label:"Dashboard",    note:"Your unit's numbers",    c:"var(--olive)"}
 ];
 const ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
+const CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M5 8.2l2 2 4-4.4"/></svg>';
 const OUT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg>';
 
-/* One unit: Cohort sheet > Reports > Dashboard, with the Request Tracker underneath */
+/* One unit: Cohort sheet > Reports > Dashboard, with the Request Tracker and the Quality Check underneath */
 function unitCard(u){
   const L = LINKS.units[u.k] || {};
   const card = document.createElement("article");
@@ -184,7 +193,8 @@ function unitCard(u){
   card.style.setProperty("--u1", u.c[0]); card.style.setProperty("--u2", u.c[1]);
   card.innerHTML = `<div class="uh"><span class="sw"></span><div><b>${esc(u.name)}</b><small>${esc(u.k)}${u.name!==u.sub?" &middot; "+esc(u.sub):""}</small></div></div>
     <ol class="flow">${STEPS.map((s,i)=>`${i?`<li class="arr" aria-hidden="true">${ARROW}</li>`:""}<li><a class="step" data-kind="${s.k}" style="--sc:${s.c}" target="_blank" rel="noopener"><i>${s.n}</i><span><b>${s.label}</b><small>${s.note}</small></span></a></li>`).join("")}</ol>
-    <a class="track" target="_blank" rel="noopener">${OUT}Request Tracker</a>`;
+    <div class="tracks"><a class="track" target="_blank" rel="noopener">${OUT}Request Tracker</a>
+      <a class="qc" target="_blank" rel="noopener">${CHECK}Complete Quality Check</a></div>`;
   card.querySelectorAll(".step").forEach(a=>{
     setLink(a, L[a.dataset.kind]);
     a.setAttribute("aria-label", `${u.name}: step ${a.querySelector("i").textContent}, ${a.querySelector("b").textContent}`);
@@ -192,6 +202,10 @@ function unitCard(u){
   const t = card.querySelector(".track");
   setLink(t, LINKS.tracker);
   t.setAttribute("aria-label", `${u.name}: Request Tracker`);
+  const q = card.querySelector(".qc");
+  setLink(q, LINKS.qc);
+  q.setAttribute("aria-label", `${u.name}: Complete Quality Check (open your own tab)`);
+  if(LINKS.qc) q.title = "Opens the PLO Quality Check 2027 sheet. Use the tab with your name.";
   return card;
 }
 
