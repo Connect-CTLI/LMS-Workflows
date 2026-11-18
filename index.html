@@ -59,8 +59,8 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
 .how .arr{color:var(--faint)}
 .how .plus{margin-left:auto;color:var(--soft)}
 
-/* The four unit shells. Clicking one opens its units underneath. */
-.shells{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}
+/* The main unit shells (one per entry in GROUPS). Clicking one opens its units underneath. */
+.shells{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:22px}
 .shell{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:18px 18px 16px;border-radius:12px;
   background:var(--panel);border:1px solid var(--line);border-top:5px solid var(--g1);color:var(--ink);font-family:var(--font);
   transition:background .15s,border-color .15s,box-shadow .15s}
@@ -123,7 +123,8 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
 .status.bad{display:block}
 .foot{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
-@media (max-width:900px){.shells{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:1100px){.shells{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:760px){.shells{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){
   h1{font-size:22px}
   .top .tag{display:none}
@@ -209,7 +210,7 @@ function unitCard(u){
   return card;
 }
 
-/* The four unit shells (from GROUPS in links.js). Clicking one opens its units underneath. */
+/* The main unit shells (from GROUPS in links.js). Clicking one opens its units underneath. */
 let OPEN = null;
 function draw(){
   const byK = Object.fromEntries(UNITS.map(u=>[u.k,u]));
@@ -221,7 +222,7 @@ function draw(){
       b.type = "button"; b.className = "shell"; b.dataset.g = g.k;
       b.setAttribute("aria-controls", "drawer");
       b.style.setProperty("--g1", g.c[0]);
-      const line = subs.length > 1 ? subs.map(u=>u.k.replace(/^LA_/,"")).join(" · ") : "Cohort sheet, reports, dashboard";
+      const line = subs.length > 1 ? subs.map(shortName).join(" · ") : "Cohort sheet, reports, dashboard";
       b.innerHTML = `<span class="stop"><span class="sk">${esc(g.k)}</span><svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></span>
         <span class="sname">${esc(g.name)}</span><span class="ssubs">${esc(line)}</span>
         <span class="sdots" aria-hidden="true">${subs.map(u=>`<i style="background:linear-gradient(135deg,${u.c[0]} 60%,${u.c[1]} 60%)"></i>`).join("")}</span>`;
