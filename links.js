@@ -25,15 +25,20 @@ const LINKS = {
     NTI:    {cohort:"", dashboard:"", reports:""},
     FET:    {cohort:"", dashboard:"", reports:""},
     EDULIS: {cohort:"", dashboard:"", reports:""},
+    EXT_ELRN: {cohort:"", dashboard:"", reports:""},
+    EXT_PRJB: {cohort:"", dashboard:"", reports:""},
+    EXT_PRJC: {cohort:"", dashboard:"", reports:""},
     PD:     {cohort:"", dashboard:"", reports:""}
   }
 };
 
-/* Unit colours from the CTLI palettes. IP, SP and NTI are new additions.
+/* Unit colours from the CTLI palettes. "short" is the label on the main tile.
+   EXT_PRJB and EXT_PRJC are placeholders: change name and short when the projects are named.
+   The codes (k) stay the same, so no sheet or link has to change.
    You should not need to change anything below this line. */
 const UNITS = [
-  {k:"LA_SMLDP", name:"School Management and Leadership Development Programme", sub:"Leadership Academy", c:["#00A1A3","#6E6259"], on:"#000b4d"},
-  {k:"LA_SMLDC", name:"School Management and Leadership Development Courses", sub:"Leadership Academy", c:["#6E6259","#00A1A3"], on:"#ffffff"},
+  {k:"LA_SMLDP", name:"School Management and Leadership Development Programme", sub:"Leadership Academy", short:"SMLDP", c:["#00A1A3","#6E6259"], on:"#000b4d"},
+  {k:"LA_SMLDC", name:"School Management and Leadership Development Courses", sub:"Leadership Academy", short:"SMLDC", c:["#6E6259","#00A1A3"], on:"#ffffff"},
   {k:"FP",     name:"Foundation Phase",               sub:"TPI", c:["#8FAD15","#8D6E97"], on:"#000b4d"},
   {k:"IP",     name:"Intermediate Phase",             sub:"TPI", c:["#BA0C2F","#A6BBC8"], on:"#ffffff"},
   {k:"SP",     name:"Senior Phase",                   sub:"TPI", c:["#5B7F95","#FFC600"], on:"#ffffff"},
@@ -41,10 +46,16 @@ const UNITS = [
   {k:"NTI",    name:"Novice Teacher Induction",       sub:"TPI", c:["#8D6E97","#FFC600"], on:"#ffffff"},
   {k:"FET",    name:"Further Education and Training", sub:"TPI", c:["#890C58","#007DBA"], on:"#ffffff"},
   {k:"EDULIS", name:"EDULIS",                         sub:"Library and information services", c:["#C4D600","#FFC600"], on:"#000b4d"},
+  {k:"EXT_ELRN", name:"eLearning",                    sub:"External Projects", short:"eLearning", c:["#8D6E97","#00A1A3"], on:"#ffffff"},
+  {k:"EXT_PRJB", name:"External Project B",           sub:"External Projects", short:"Project B", c:["#5B7F95","#C4D600"], on:"#ffffff"},
+  {k:"EXT_PRJC", name:"External Project C",           sub:"External Projects", short:"Project C", c:["#A6BBC8","#890C58"], on:"#000b4d"},
   {k:"PD",     name:"Professional Development",       sub:"PDD", c:["#007DBA","#C4D600"], on:"#ffffff"}
 ];
 
 function esc(s){return String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));}
+
+/* The label for a sub-unit on its main tile */
+function shortName(u){ return u.short || u.k; }
 
 function setLink(el, url){
   if(!el) return;
@@ -154,7 +165,8 @@ const GROUPS = [
   {k:"TPI",    name:"Teacher Practice Improvement", c:["#001489","#FFC600"], units:["FP","IP","SP","IE","NTI","FET"]},
   {k:"LA",     name:"Leadership Academy",           c:["#00A1A3","#6E6259"], units:["LA_SMLDP","LA_SMLDC"]},
   {k:"PD",     name:"Professional Development",     c:["#007DBA","#C4D600"], units:["PD"]},
-  {k:"EDULIS", name:"Library and information services", c:["#C4D600","#FFC600"], units:["EDULIS"]}
+  {k:"EDULIS", name:"Library and information services", c:["#C4D600","#FFC600"], units:["EDULIS"]},
+  {k:"EXT",    name:"External Projects",            c:["#8D6E97","#00A1A3"], units:["EXT_ELRN","EXT_PRJB","EXT_PRJC"]}
 ];
 
 /* One sub-unit card with three buttons */
@@ -180,7 +192,7 @@ function renderUnitCards(target){
   UNITS.forEach(u=>box.appendChild(makeUnitCard(u)));
 }
 
-/* Overview: four main unit tiles. Clicking one opens its sub-units below. */
+/* Overview: the main unit tiles (GROUPS). Clicking one opens its sub-units below. */
 let OPEN_GROUP = null;
 function renderUnitGroups(tilesId, drawerId){
   const tiles = document.getElementById(tilesId), drawer = document.getElementById(drawerId);
@@ -213,7 +225,7 @@ function renderUnitGroups(tilesId, drawerId){
     b.type = "button"; b.className = "gtile"; b.dataset.g = g.k;
     b.setAttribute("aria-controls", drawerId);
     b.style.setProperty("--g1", g.c[0]); b.style.setProperty("--g2", g.c[1]);
-    const line = subs.length > 1 ? subs.map(u=>u.k.replace(/^LA_/,"")).join(" · ") : "Cohort sheet, dashboard, reports";
+    const line = subs.length > 1 ? subs.map(shortName).join(" · ") : "Cohort sheet, dashboard, reports";
     b.innerHTML = `<span class="gtop"><span class="gk">${esc(g.k)}</span>
         <svg class="gchev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></span>
       <span class="gname">${esc(g.name)}</span>
