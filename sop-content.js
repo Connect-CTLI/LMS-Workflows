@@ -15,8 +15,8 @@ const SOP = {
   email: "connect.ctli@wced.info",
   control: [
     ["Document", "SOP: LMS Operations Workflow 2027"],
-    ["Version", "1.4"],
-    ["Date issued", "5 November 2026"],
+    ["Version", "1.6"],
+    ["Date issued", "18 November 2026"],
     ["Applies from", "January 2027"],
     ["Owner", "CTLI Process Team (LMS Administration)"],
     ["Next review", "October 2027, or sooner if the workflow changes"]
@@ -38,6 +38,9 @@ const SOP = {
     ["NTI", "TPI: Novice Teacher Induction"],
     ["FET", "TPI: Further Education and Training"],
     ["EDULIS", "EDULIS: Library and information services"],
+    ["EXT_ELRN", "External Projects: eLearning"],
+    ["EXT_PRJB", "External Projects: External Project B"],
+    ["EXT_PRJC", "External Projects: External Project C"],
     ["PD", "Professional Development (PDD)"]
   ],
 
@@ -52,6 +55,7 @@ const SOP = {
   terms: [
     ["PLO", "Professional Learning Opportunity: anything CTLI offers teachers on Connect@CTLI, such as a course, a webinar or another event."],
     ["Shell", "The PLO's space on Connect@CTLI, set up by the LMS Admin. A shell can be brand new or a copy of an existing PLO shell."],
+    ["Delivery mode", "How the PLO is delivered: Blended, Face-to-Face or Online. Chosen on the request form."],
     ["Opening date", "The day the PLO opens on Connect@CTLI and participants can get in."],
     ["Official start date", "The start date as advertised to teachers."],
     ["Official end date", "The end date as advertised to teachers."],
@@ -59,7 +63,7 @@ const SOP = {
     ["Moodle short name and cohort code", "Moodle identifiers for the PLO run. The LMS Admin assigns both once a request comes in, so the PC does not need them."],
     ["Course, district and school groups", "Every participant is placed in all three groups when uploaded. This makes reporting by course, district and school possible."],
     ["Request Tracker", "Shows each request, its step out of 7 and what happens next. PCs check it instead of emailing for updates. It also flags dates in the wrong order and PLOs that open within 2 weeks."],
-    ["Status", "Set by the LMS Admin on the request sheet: Requested, Activated (hidden), QC passed, Participants loaded, PLO open, PLO closed, Report sent. Each change moves the Tracker on. Status changes do not send emails: the LMS Admin emails the PC by hand."],
+    ["Status", "Set by the LMS Admin on the request sheet: Requested, Activated (hidden), QC passed, Participants loaded, PLO open, PLO closed, Report sent. Each change moves the Tracker on. Status changes do not send emails: the LMS Admin emails the PC by hand. The quality check is the exception: its emails and the QC passed status are automatic."],
     ["Cohort sheet", "Each unit's own Google Sheet of participants. All unit sheets feed the Master participant data."],
     ["CTLI Master Dashboard", "Holds completions for all units. Each unit dashboard pulls only its own unit's numbers from it."]
   ],
@@ -68,22 +72,22 @@ const SOP = {
     {
       n: 1, name: "Request and quality check", short: "Request", colour: "#FFC600", ink: "#0b1530",
       when: "As early as possible (see What you can request)",
-      intro: "The PLO is set up on Connect@CTLI but stays hidden until it passes the quality check.",
+      intro: "The PLO is set up on Connect@CTLI but stays hidden until it passes the quality check. A new cohort on an existing PLO skips the quality check (steps 1.3 and 1.4).",
       steps: [
         { id: "1.1", title: "Submit the PLO shell request", who: ["PC"], email: true, status: "Requested",
-          detail: "Complete the Shell Activation Request form as early as possible, using the lead time for your request type (see What you can request). Give the PC's name and email address, the delivery unit, the request type, the full PLO name as listed in Annexure A, the existing PLO (for a copy or a new cohort), the expected number of participants and the four dates: opening, official start, official end and closing. For a once-off event such as a webinar, use the same date for start and end. You do not need the Moodle short name or cohort code.",
-          output: "The LMS Admin inbox gets an alert and you get an acknowledgement receipt by email from the LMS Admin. The request shows on the Request Tracker.",
+          detail: "Complete the Shell Activation Request form as early as possible, using the lead time for your request type (see What you can request). Give the PC's name and email address, the delivery unit, the request type, the full PLO name as listed in Annexure A, the existing PLO (for a copy or a new cohort), the delivery mode (Blended, Face-to-Face or Online), the expected number of participants and the four dates: opening, official start, official end and closing. For a once-off event such as a webinar, use the same date for start and end. You do not need the Moodle short name or cohort code.",
+          output: "The LMS Admin inbox gets an alert and you get an acknowledgement receipt by email from the LMS Admin. The request shows on the Request Tracker, and its details are added to the Summary tab of your unit cohort sheet automatically.",
           links: [] },
         { id: "1.2", title: "Set up the PLO shell and keep it hidden", who: ["LMS Admin"], email: false, status: "Activated (hidden)",
-          detail: "Assign the Moodle short name and cohort code, set up the PLO shell on Connect@CTLI and keep it hidden from participants. On the request sheet, fill in Course short name (the Moodle short name), Cohort and Moodle link, then set the Status. Email the PC the PLO link, short name and cohort from connect.ctli@wced.info.",
+          detail: "Assign the Moodle short name and cohort code, set up the PLO shell on Connect@CTLI and keep it hidden from participants. On the request sheet, fill in Course short name (the Moodle short name), Cohort and Moodle link, then set the Status. The short name and cohort go onto the unit cohort sheet Summary row by themselves, so the PLO shows on the PC's QC sheet. Email the PC the PLO link, short name and cohort from connect.ctli@wced.info.",
           output: "The LMS Admin emails the PC the PLO link, short name and cohort.",
           links: [] },
-        { id: "1.3", title: "Run the quality check", who: ["PDD", "PC"], email: false, status: "",
-          detail: "PDD and the PC test the PLO together: content, activities, completion settings and dates. Fix anything that does not work before moving on.",
-          output: "A PLO that is ready for participants.", links: [] },
-        { id: "1.4", title: "Confirm the quality check", who: ["PC", "LMS Admin"], email: false, status: "QC passed",
-          detail: "The PC lets the LMS Admin know that the quality check passed. The LMS Admin sets the Status. The PLO stays hidden until this step is done.",
-          output: "The Tracker shows QC passed. The LMS Admin reminds the PC by email to finish the cohort sheet.", links: [] }
+        { id: "1.3", title: "Run the quality check on the QC sheet", who: ["PC", "PDD"], email: false, status: "",
+          detail: "The PC opens their own tab on the PLO Quality Check 2027 sheet, where the PLO is listed from the cohort sheet. PDD and the PC test the PLO together and tick each of the 11 checks across its row: setup, content, activities, completion and participant view. Anything that does not work is noted and fixed before sign-off.",
+          output: "Every check ticked on the PLO's row.", links: [] },
+        { id: "1.4", title: "Sign off the quality check", who: ["PC", "LMS Admin"], email: true, status: "QC passed",
+          detail: "The PC ticks PC sign-off once all 11 checks are ticked; the row locks and every LMS Admin gets an email automatically. The LMS Admin checks the PLO and ticks LMS Admin sign-off, which locks the LMS Admin cells and, automatically, sets the request to QC passed, updates the QC status on the cohort sheet Summary tab and emails the PC that the quality check is complete. Only the file owner (connect.ctli@wced.info) can unlock a signed row, and the reason is logged. The PLO stays hidden until both have signed off.",
+          output: "The QC row shows QC complete, the Tracker shows QC passed and the PC gets the Quality check complete email, which also reminds them to finish the cohort sheet.", links: [] }
       ]
     },
     {
@@ -92,7 +96,7 @@ const SOP = {
       intro: "Participants are loaded from the unit cohort sheet, checked, and the PLO opens on the opening date.",
       steps: [
         { id: "2.1", title: "Complete the cohort sheet", who: ["PC", "Intern"], email: false, status: "",
-          detail: "Capture every participant in your unit's cohort sheet and check names, email addresses, district and school. Straight after the email address, paste each participant's Age, Race, Disability and Gender, in that order. There are no dropdowns: copy and paste the details as they were captured. Age can be an exact age or a range (<35, 35-55, >55); the dashboards show it as a range. These four details are only used for reporting on the dashboards and never go to Moodle. PERSAL and EMIS numbers are not needed. Leadership Academy captures LA_SMLDP and LA_SMLDC participants on their own sheets.",
+          detail: "Capture every participant in your unit's cohort sheet and check names, email addresses, district and school. Straight after the email address, paste each participant's Age, Race, Disability and Gender, in that order. There are no dropdowns: copy and paste the details as they were captured. Age can be an exact age or a range (<35, 35-55, >55); the dashboards show it as a range. These four details are only used for reporting on the dashboards and never go to Moodle. PERSAL and EMIS numbers are not needed. Leadership Academy captures LA_SMLDP and LA_SMLDC participants on their own sheets, and each External Projects sub-unit has its own sheet.",
           output: "A complete, checked cohort sheet.", links: ["unit:cohort"] },
         { id: "2.2", title: "Upload participants", who: ["LMS Admin"], email: false, status: "Participants loaded",
           detail: "Upload participants from the cohort sheet into the course, district and school groups, then set the Status.",
@@ -140,14 +144,14 @@ const SOP = {
 
   rules: [
     "Send requests as early as possible: at least 4 weeks before your PLO must run on the LMS for a brand new shell or a copy of an existing shell, and 1 to 2 weeks before for a new cohort on an existing PLO.",
-    "No PLO opens to participants before the quality check is confirmed.",
+    "No PLO opens to participants before the PC and the LMS Admin have both signed off the quality check.",
     "Only the LMS Admin changes the Status on the request sheet. Nobody types on the Request Tracker tab: it updates by itself.",
     "Participant details go into the unit cohort sheet, not into emailed lists.",
     "Any change made on Moodle by a PC or intern is reported to the LMS Admin.",
     "Completion reports are only built after the closing date.",
     "Completions are pasted once, into the CTLI Master Dashboard only. Unit dashboards are never edited by hand.",
     "Unit dashboards show only that unit's numbers. Only the Master Dashboard shows all units.",
-    "Leadership Academy keeps LA_SMLDP and LA_SMLDC separate in every file."
+    "Leadership Academy keeps LA_SMLDP and LA_SMLDC separate in every file, and External Projects keeps each of its sub-units separate."
   ],
 
   /* The SOP only links to each unit's cohort sheet, dashboard and completion reports folder */
