@@ -59,22 +59,23 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
 .how .arr{color:var(--faint)}
 .how .plus{margin-left:auto;color:var(--soft)}
 
-/* The main unit shells (one per entry in GROUPS). Clicking one opens its units underneath. */
-.shells{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:22px}
-.shell{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:18px 18px 16px;border-radius:12px;
-  background:var(--panel);border:1px solid var(--line);border-top:5px solid var(--g1);color:var(--ink);font-family:var(--font);
+/* The main unit shells (one per entry in GROUPS). All five sit in one even row; clicking one opens its units underneath. */
+.shells{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:22px;align-items:stretch}
+.shell{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:4px;padding:13px 14px 12px;border-radius:11px;height:100%;
+  background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--g1);color:var(--ink);font-family:var(--font);
   transition:background .15s,border-color .15s,box-shadow .15s}
 .shell:hover{background:color-mix(in srgb,var(--g1) 7%,var(--panel));border-color:color-mix(in srgb,var(--g1) 40%,var(--line));border-top-color:var(--g1)}
 .shell:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
 .shell[aria-expanded="true"]{background:color-mix(in srgb,var(--g1) 11%,var(--panel));border-color:color-mix(in srgb,var(--g1) 50%,var(--line));border-top-color:var(--g1);box-shadow:0 8px 20px -14px var(--g1)}
 .stop{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.sk{font-size:26px;font-weight:600;letter-spacing:-.01em;line-height:1.1}
-.chev{width:18px;height:18px;color:var(--faint);transition:transform .2s}
+.sk{font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.1}
+.chev{width:16px;height:16px;color:var(--faint);transition:transform .2s}
 .shell[aria-expanded="true"] .chev{transform:rotate(180deg);color:var(--ink)}
-.sname{font-size:14px;font-weight:600;line-height:1.3}
-.ssubs{font-size:12px;color:var(--faint);line-height:1.35}
-.sdots{display:flex;gap:4px;margin-top:6px}
-.sdots i{width:11px;height:11px;border-radius:3px}
+.sname{font-size:13px;font-weight:600;line-height:1.3}
+.ssubs{font-size:11.5px;color:var(--faint);line-height:1.35}
+/* Dots sit on the bottom edge so they line up across all five tiles */
+.sdots{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto;padding-top:6px}
+.sdots i{width:10px;height:10px;border-radius:3px}
 .drawer{margin-top:14px;border:1px solid color-mix(in srgb,var(--g1) 35%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--g1) 5%,var(--panel));padding:16px;display:flex;flex-direction:column;gap:14px;animation:din .18s ease-out}
 .drawer[hidden]{display:none}
 .dhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -123,8 +124,18 @@ h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--ink
 .status.bad{display:block}
 .foot{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
-@media (max-width:1100px){.shells{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:760px){.shells{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Five across stays even down to tablet width. Below that the tiles stack one per row, so no row is ever half full. */
+@media (max-width:980px){.shell{padding:12px 12px 11px}.sk{font-size:18px}.sname{font-size:12.5px}.ssubs{font-size:11px}}
+@media (max-width:820px){
+  .shells{grid-template-columns:1fr;gap:8px}
+  .shell{display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:14px;row-gap:2px}
+  .shell .stop{grid-row:1/3}
+  .shell .stop .chev{display:none}
+  .shell .sname{grid-column:2}
+  .shell .ssubs{grid-column:2}
+  .shell .sdots{grid-column:3;grid-row:1/3;margin:0;padding:0}
+  .sk{min-width:72px}
+}
 @media (max-width:640px){
   h1{font-size:22px}
   .top .tag{display:none}
